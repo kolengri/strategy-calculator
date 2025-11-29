@@ -20,10 +20,6 @@ export function Home() {
     <BaseLayout>
       <title>{t("app.title", { title: t("home.title") })}</title>
       <div className="flex justify-center items-center gap-8 mb-8">
-        {t("app.title", { title: t("home.title") })}
-        {t("home.title")}
-      </div>
-      <div className="flex justify-center items-center gap-8 mb-8">
         <Tabs defaultValue={strategies.at(0)?.id ?? ""}>
           <TabsList>
             {strategies.map((strategy) => (

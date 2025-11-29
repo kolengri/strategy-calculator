@@ -9,6 +9,11 @@
     "newStrategy": "New Strategy"
   },
   "components": {
+    "features": {
+      "header": {
+        "title": "Strategy Calculator"
+      }
+    },
     "ui": {
       "date-picker": {
         "placeholder": "Select date",
