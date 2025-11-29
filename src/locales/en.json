@@ -4,7 +4,9 @@
     "description": "Strategy Calculator"
   },
   "home": {
-    "title": "Home"
+    "title": "Home",
+    "addStrategy": "Add Strategy",
+    "newStrategy": "New Strategy"
   },
   "components": {
     "ui": {
