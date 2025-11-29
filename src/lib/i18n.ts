@@ -19,7 +19,7 @@ i18n.use(initReactI18next).init({
     AvailableLocales,
     { translation: typeof enTranslations | typeof ruTranslations }
   >,
-  lng: "ru", // default language
+  lng: "en", // default language
   fallbackLng: "en",
   interpolation: {
     escapeValue: false, // React already escapes values

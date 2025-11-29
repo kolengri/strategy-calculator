@@ -1,6 +1,6 @@
 {
   "app": {
-    "title": "Strategy Calculator",
+    "title": "{{title}} - Strategy Calculator",
     "description": "Strategy Calculator"
   },
   "home": {
