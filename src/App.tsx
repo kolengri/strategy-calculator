@@ -10,12 +10,11 @@ export function App() {
 
   return (
     <>
-      <Helmet>
-        <title>{t("app.title")}</title>
+      <Helmet titleTemplate={`%s | ${t("app.title")}`}>
+        <title>{t("home.title")}</title>
         <meta name="description" content={t("app.description")} />
         <link rel="icon" type="image/svg+xml" href={logo} />
       </Helmet>
-
       <Home />
     </>
   );
