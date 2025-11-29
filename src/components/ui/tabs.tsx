@@ -2,7 +2,6 @@ import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
 
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
 
 function Tabs({
   className,
@@ -33,9 +32,6 @@ function TabsList({
   );
 }
 
-const tabsTriggerClasses =
-  "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30  inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4";
-
 function TabsTrigger({
   className,
   ...props
@@ -44,32 +40,13 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        tabsTriggerClasses,
-        "text-foreground dark:text-muted-foreground",
+        "cursor-pointer select-none text-foreground dark:text-muted-foreground data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30  inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
     />
   );
 }
-
-export const TableTriggerLikeButton = ({
-  className,
-  onClick,
-  ...props
-}: React.ComponentProps<typeof Button>) => {
-  return (
-    <Button
-      className={cn(tabsTriggerClasses, className)}
-      {...props}
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        onClick?.(e);
-      }}
-    />
-  );
-};
 
 function TabsContent({
   className,
