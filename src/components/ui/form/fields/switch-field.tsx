@@ -2,7 +2,7 @@ import { Switch } from "@/components/ui/switch";
 import { useId } from "react";
 import { useFieldContext } from "../form";
 import { FieldWrapper } from "./field-wrapper";
-import { FieldWrapperComponentProps } from "./field-wrapper";
+import { type FieldWrapperComponentProps } from "./field-wrapper";
 
 export type SwitchFieldProps = {} & FieldWrapperComponentProps;
 

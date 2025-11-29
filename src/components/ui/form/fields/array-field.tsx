@@ -1,14 +1,14 @@
 import { type AnyFieldApi, type AnyFormApi } from "@tanstack/react-form";
 import { type ArrayKeys } from "@/types/ArrayKeys";
 import { type AnyReactFormExtendedApi } from "@/types/form/AnyReactFormExtendedApi";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { useId } from "react";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
+import { useTranslation } from "react-i18next";
 
 type ArrayFieldProps<
   T extends AnyFormApi,
-  Keys extends ArrayKeys<T["state"]["values"]>,
+  Keys extends ArrayKeys<T["state"]["values"]>
 > = {
   form: T;
   name: Keys;
@@ -19,7 +19,7 @@ type ArrayFieldProps<
 
 export const ArrayField = <
   T extends AnyFormApi,
-  Keys extends ArrayKeys<T["state"]["values"]>,
+  Keys extends ArrayKeys<T["state"]["values"]>
 >(
   props: ArrayFieldProps<T, Keys>
 ) => {
@@ -36,7 +36,7 @@ export const ArrayField = <
 
   // Need to cast to AnyReactFormExtendedApi because the type of form is not known
   const form = anyForm as unknown as AnyReactFormExtendedApi;
-  const t = useTranslations("components.ui.form.fields.array-field");
+  const { t } = useTranslation();
 
   return (
     <form.Field name={name as string} mode="array">
@@ -59,7 +59,7 @@ export const ArrayField = <
                         size="xs"
                         onClick={() => field.removeValue(index)}
                       >
-                        {t("remove")}
+                        {t("components.ui.form.fields.array-field.remove")}
                       </Button>
                     </div>
                   )}
@@ -72,7 +72,7 @@ export const ArrayField = <
                 onClick={() => field.pushValue({})}
                 disabled={readonly}
               >
-                {t("add")}
+                {t("components.ui.form.fields.array-field.add")}
               </Button>
             </div>
           </FieldWrapper>

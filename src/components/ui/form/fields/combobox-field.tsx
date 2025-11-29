@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, useMemo } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { useFieldContext } from "../form";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Check, ChevronsUpDown, Search } from "lucide-react";
-import { cn } from "@/lib/shadcn-utils";
+import { cn } from "@/lib/utils";
 
 export type ComboboxOption<T extends string> = {
   label: string;
@@ -85,7 +85,10 @@ export const ComboboxField = <T extends string>({
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           <div className="flex flex-col">
             <div className="flex items-center border-b px-3">
               <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
@@ -139,4 +142,3 @@ export const ComboboxField = <T extends string>({
 };
 
 export default ComboboxField;
-

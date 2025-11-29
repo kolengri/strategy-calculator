@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib";
-import { AnyFieldApi } from "@tanstack/react-form";
+import { cn } from "@/lib/utils";
+import { type AnyFieldApi } from "@tanstack/react-form";
 import { isEmptyArray } from "is-what";
 import { useEffect } from "react";
 

@@ -5,7 +5,26 @@
   },
   "home": {
     "title": "Home"
-  }
+  },
+  "components": {
+    "ui": {
+      "date-picker": {
+        "placeholder": "Select date",
+        "multiple": {
+          "selected": "{{count}} date selected",
+          "placeholder": "Select dates"
+        },
+        "range": {
+          "placeholder": "Select date range"
+        }
+      },
+      "form": {
+        "fields": {
+          "array-field": {
+            "add": "Add",
+            "remove": "Remove"
+          }
+        }
+      }
+    }
 }
-
-

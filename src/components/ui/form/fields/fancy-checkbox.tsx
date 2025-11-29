@@ -1,9 +1,9 @@
 "use client";
 
 import { useId, useState, useEffect } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { useFieldContext } from "../form";
-import { Button, ButtonProps } from "../../button";
+import { Button, type ButtonProps } from "../../button";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
 

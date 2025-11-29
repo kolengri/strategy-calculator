@@ -1,7 +1,7 @@
 "use client";
 
 import { useId } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { X, Plus } from "lucide-react";

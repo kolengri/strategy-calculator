@@ -1,4 +1,4 @@
-import { TextField, TextFieldProps } from "./text-field";
+import { TextField, type TextFieldProps } from "./text-field";
 
 export const EmailField = (props: Omit<TextFieldProps, "type">) => {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, useEffect } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { useFieldContext } from "../form";
 import {
   Select,

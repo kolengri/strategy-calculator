@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
 import { useFieldContext } from "../form";
 import { Textarea } from "../../textarea";
 

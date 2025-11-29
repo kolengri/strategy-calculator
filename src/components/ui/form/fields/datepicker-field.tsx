@@ -1,6 +1,6 @@
 import { useId } from "react";
-import { FieldWrapper, FieldWrapperComponentProps } from "./field-wrapper";
-import { DatePicker, DatePickerProps } from "@/components/ui/date-picker";
+import { FieldWrapper, type FieldWrapperComponentProps } from "./field-wrapper";
+import { DatePicker, type DatePickerProps } from "@/components/ui/date-picker";
 import { useFieldContext } from "../form";
 import type { DateRange } from "react-day-picker";
 

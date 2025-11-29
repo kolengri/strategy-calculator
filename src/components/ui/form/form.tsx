@@ -15,7 +15,6 @@ const NumberField = lazy(() => import("./fields/number-field"));
 const SelectField = lazy(() => import("./fields/select-field"));
 const ComboboxField = lazy(() => import("./fields/combobox-field"));
 const FancyCheckbox = lazy(() => import("./fields/fancy-checkbox"));
-const PriceField = lazy(() => import("./fields/price-field"));
 const SwitchField = lazy(() => import("./fields/switch-field"));
 const SubmitButton = lazy(() => import("./components/submit-button"));
 
@@ -31,7 +30,6 @@ const fieldComponents = {
   SelectField,
   ComboboxField,
   FancyCheckbox,
-  PriceField,
   SwitchField,
 } as const;
 
