@@ -24,15 +24,15 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
 
   return (
     <Form form={form}>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Basic Information Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">
               {t("components.features.strategy-form.sections.basic")}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             <form.AppField name="name">
               {(field) => (
                 <field.TextField
@@ -55,135 +55,131 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
               )}
             </form.AppField>
 
-            <form.AppField name="currentAge">
-              {(field) => (
-                <field.NumberField
-                  label={t(
-                    "components.features.strategy-form.fields.currentAge"
+            <div className="grid grid-cols-2 gap-3">
+              <form.AppField name="currentAge">
+                {(field) => (
+                  <field.NumberField
+                    label={t(
+                      "components.features.strategy-form.fields.currentAge"
+                    )}
+                    required
+                    min={0}
+                    max={120}
+                  />
+                )}
+              </form.AppField>
+
+              {strategyType === "age-based" && (
+                <form.AppField name="goalAge">
+                  {(field) => (
+                    <field.NumberField
+                      label={t(
+                        "components.features.strategy-form.fields.goalAge"
+                      )}
+                      required
+                      min={0}
+                      max={120}
+                      placeholder="65"
+                      deleteOnUnmount
+                    />
                   )}
-                  required
-                  min={0}
-                  max={120}
-                />
+                </form.AppField>
               )}
-            </form.AppField>
+
+              {strategyType === "goal-based" && (
+                <form.AppField name="goal">
+                  {(field) => (
+                    <field.NumberField
+                      label={t("components.features.strategy-form.fields.goal")}
+                      required
+                      min={0}
+                      step={1000}
+                      placeholder="0"
+                      deleteOnUnmount
+                    />
+                  )}
+                </form.AppField>
+              )}
+            </div>
           </CardContent>
         </Card>
 
         {/* Financial Details Section */}
         <Card>
-          <CardHeader>
-            <CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base">
               {t("components.features.strategy-form.sections.financial")}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <form.AppField name="initialAmount">
-              {(field) => (
-                <field.NumberField
-                  label={t(
-                    "components.features.strategy-form.fields.initialAmount"
-                  )}
-                  required
-                  min={0}
-                  step={1000}
-                  placeholder="0"
-                />
-              )}
-            </form.AppField>
-
-            <form.AppField name="monthlyContribution">
-              {(field) => (
-                <field.NumberField
-                  label={t(
-                    "components.features.strategy-form.fields.monthlyContribution"
-                  )}
-                  required
-                  min={0}
-                  step={100}
-                  placeholder="0"
-                />
-              )}
-            </form.AppField>
-
-            <form.AppField name="selectedFund">
-              {(field) => (
-                <field.SelectField
-                  label={t(
-                    "components.features.strategy-form.fields.selectedFund"
-                  )}
-                  options={FUNDS.map((fund) => ({
-                    label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(
-                      1
-                    )}% годовых)`,
-                    value: fund.id,
-                  }))}
-                  required
-                />
-              )}
-            </form.AppField>
-
-            <form.AppField name="inflationRate">
-              {(field) => (
-                <field.NumberField
-                  label={t(
-                    "components.features.strategy-form.fields.inflationRate"
-                  )}
-                  required
-                  min={0}
-                  max={100}
-                  step={0.1}
-                  placeholder="3.0"
-                />
-              )}
-            </form.AppField>
-          </CardContent>
-        </Card>
-
-        {/* Goal Settings Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {t("components.features.strategy-form.sections.goal")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {strategyType === "age-based" && (
-              <form.AppField name="goalAge">
+          <CardContent className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <form.AppField name="initialAmount">
                 {(field) => (
                   <field.NumberField
                     label={t(
-                      "components.features.strategy-form.fields.goalAge"
+                      "components.features.strategy-form.fields.initialAmount"
                     )}
-                    required
-                    min={0}
-                    max={120}
-                    placeholder="65"
-                    deleteOnUnmount
-                  />
-                )}
-              </form.AppField>
-            )}
-
-            {strategyType === "goal-based" && (
-              <form.AppField name="goal">
-                {(field) => (
-                  <field.NumberField
-                    label={t("components.features.strategy-form.fields.goal")}
                     required
                     min={0}
                     step={1000}
                     placeholder="0"
-                    deleteOnUnmount
                   />
                 )}
               </form.AppField>
-            )}
+
+              <form.AppField name="monthlyContribution">
+                {(field) => (
+                  <field.NumberField
+                    label={t(
+                      "components.features.strategy-form.fields.monthlyContribution"
+                    )}
+                    required
+                    min={0}
+                    step={100}
+                    placeholder="0"
+                  />
+                )}
+              </form.AppField>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <form.AppField name="selectedFund">
+                {(field) => (
+                  <field.SelectField
+                    label={t(
+                      "components.features.strategy-form.fields.selectedFund"
+                    )}
+                    options={FUNDS.map((fund) => ({
+                      label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(
+                        1
+                      )}% годовых)`,
+                      value: fund.id,
+                    }))}
+                    required
+                  />
+                )}
+              </form.AppField>
+
+              <form.AppField name="inflationRate">
+                {(field) => (
+                  <field.NumberField
+                    label={t(
+                      "components.features.strategy-form.fields.inflationRate"
+                    )}
+                    required
+                    min={0}
+                    max={100}
+                    step={0.1}
+                    placeholder="3.0"
+                  />
+                )}
+              </form.AppField>
+            </div>
           </CardContent>
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end">
+        <div className="flex justify-end pt-2">
           <form.SubmitButton>
             {t("components.features.strategy-form.submit-button.save")}
           </form.SubmitButton>
