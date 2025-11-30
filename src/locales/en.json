@@ -25,7 +25,8 @@
           "initialAmount": "Initial Amount",
           "monthlyContribution": "Monthly Contribution",
           "selectedFund": "Investment Fund",
-          "inflationRate": "Inflation Rate (%)"
+          "inflationRate": "Inflation Rate (%)",
+          "taxRate": "Tax Rate (%)"
         },
         "sections": {
           "basic": "Basic Information",

@@ -174,6 +174,18 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                   />
                 )}
               </form.AppField>
+              <form.AppField name="taxRate">
+                {(field) => (
+                  <field.NumberField
+                    label={t(
+                      "components.features.strategy-form.fields.taxRate"
+                    )}
+                    required
+                    min={0}
+                    max={100}
+                  />
+                )}
+              </form.AppField>
             </div>
           </CardContent>
         </Card>

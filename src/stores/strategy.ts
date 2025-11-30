@@ -19,6 +19,7 @@ type StrategyBase = {
   monthlyContribution: number;
   selectedFund: (typeof FUNDS)[number]["id"];
   inflationRate: number;
+  taxRate: number;
 };
 
 export type AgeBasedStrategy = StrategyBase & {
@@ -57,6 +58,7 @@ export const useStrategyStore = create<StrategyStore>()(
           monthlyContribution: 500,
           selectedFund: FUNDS[0].id,
           goalAge: 65,
+          taxRate: 13,
         },
       ],
       newBlankStrategy: () =>
@@ -78,6 +80,7 @@ export const useStrategyStore = create<StrategyStore>()(
                 monthlyContribution: 500,
                 selectedFund: FUNDS[0].id,
                 goalAge: 65,
+                taxRate: 13,
               },
             ],
           };
