@@ -15,6 +15,22 @@
         "type": {
           "age-based": "Age Based",
           "goal-based": "Goal Based"
+        },
+        "fields": {
+          "name": "Strategy Name",
+          "type": "Strategy Type",
+          "currentAge": "Current Age",
+          "goalAge": "Goal Age",
+          "goal": "Goal Amount",
+          "initialAmount": "Initial Amount",
+          "monthlyContribution": "Monthly Contribution",
+          "selectedFund": "Investment Fund",
+          "inflationRate": "Inflation Rate (%)"
+        },
+        "sections": {
+          "basic": "Basic Information",
+          "financial": "Financial Details",
+          "goal": "Goal Settings"
         }
       }
     },

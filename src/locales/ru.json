@@ -3,10 +3,41 @@
     "title": "Калькулятор стратегий",
     "description": "Калькулятор стратегий"
   },
+  "components": {
+    "features": {
+      "header": {
+        "title": "Калькулятор стратегий"
+      },
+      "strategy-form": {
+        "submit-button": {
+          "save": "Сохранить"
+        },
+        "type": {
+          "age-based": "По возрасту",
+          "goal-based": "По цели"
+        },
+        "fields": {
+          "name": "Название стратегии",
+          "type": "Тип стратегии",
+          "currentAge": "Текущий возраст",
+          "goalAge": "Целевой возраст",
+          "goal": "Целевая сумма",
+          "initialAmount": "Начальная сумма",
+          "monthlyContribution": "Ежемесячный взнос",
+          "selectedFund": "Инвестиционный фонд",
+          "inflationRate": "Уровень инфляции (%)"
+        },
+        "sections": {
+          "basic": "Основная информация",
+          "financial": "Финансовые детали",
+          "goal": "Настройки цели"
+        }
+      }
+    }
+  },
   "home": {
-    "title": "Главная"
+    "title": "Главная",
+    "addStrategy": "Добавить стратегию",
+    "newStrategy": "Новая стратегия"
   }
 }
-
-
-
