@@ -58,6 +58,7 @@
   "home": {
     "addStrategy": "Add Strategy",
     "newStrategy": "New Strategy",
+    "defaultStrategyName": "Default Strategy",
     "title": "Home"
   }
 }

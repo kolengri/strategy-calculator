@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { STRATEGY_STORE_KEY } from "./stores";
 import { FUNDS } from "@/db/funds";
 import { findNextName } from "@/utils/find-next-name";
+import i18n from "@/lib/i18n";
 
 export const STRATEGY_TYPES = ["age-based", "goal-based"] as const;
 export type StrategyType = (typeof STRATEGY_TYPES)[number];
@@ -47,7 +48,7 @@ export const useStrategyStore = create<StrategyStore>()(
       strategies: [
         {
           id: uuidv4(),
-          name: "Strategy 1",
+          name: i18n.t("home.defaultStrategyName"),
           createdAt: new Date(),
           type: "age-based",
           currentAge: 25,
@@ -67,7 +68,7 @@ export const useStrategyStore = create<StrategyStore>()(
                 id: uuidv4(),
                 name: findNextName(
                   state.strategies.map((s) => s.name),
-                  "New Strategy"
+                  i18n.t("home.newStrategy")
                 ),
                 createdAt: new Date(),
                 type: "age-based",
