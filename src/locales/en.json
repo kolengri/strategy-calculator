@@ -1,26 +1,30 @@
 {
   "app": {
-    "title": "{{title}} - Strategy Calculator",
-    "description": "Strategy Calculator"
-  },
-  "home": {
-    "title": "Home",
-    "addStrategy": "Add Strategy",
-    "newStrategy": "New Strategy"
+    "description": "Strategy Calculator",
+    "title": "{{title}} - Strategy Calculator"
   },
   "components": {
     "features": {
       "header": {
         "title": "Strategy Calculator"
+      },
+      "strategy-form": {
+        "submit-button": {
+          "save": "Save"
+        },
+        "type": {
+          "age-based": "Age Based",
+          "goal-based": "Goal Based"
+        }
       }
     },
     "ui": {
       "date-picker": {
-        "placeholder": "Select date",
         "multiple": {
-          "selected": "{{count}} date selected",
-          "placeholder": "Select dates"
+          "placeholder": "Select dates",
+          "selected": "{{count}} date selected"
         },
+        "placeholder": "Select date",
         "range": {
           "placeholder": "Select date range"
         }
@@ -34,5 +38,10 @@
         }
       }
     }
+  },
+  "home": {
+    "addStrategy": "Add Strategy",
+    "newStrategy": "New Strategy",
+    "title": "Home"
   }
 }

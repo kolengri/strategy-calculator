@@ -17,6 +17,7 @@ const ComboboxField = lazy(() => import("./fields/combobox-field"));
 const FancyCheckbox = lazy(() => import("./fields/fancy-checkbox"));
 const SwitchField = lazy(() => import("./fields/switch-field"));
 const SubmitButton = lazy(() => import("./components/submit-button"));
+const FancyRadioButton = lazy(() => import("./fields/fancy-radio-button"));
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -31,6 +32,7 @@ const fieldComponents = {
   ComboboxField,
   FancyCheckbox,
   SwitchField,
+  FancyRadioButton,
 } as const;
 
 const formComponents = {

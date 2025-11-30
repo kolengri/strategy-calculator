@@ -15,6 +15,7 @@ export const NumberField = ({
   loading,
   prefix,
   suffix,
+  deleteOnUnmount = false,
   ...props
 }: NumberFieldProps) => {
   const id = useId();
@@ -27,6 +28,7 @@ export const NumberField = ({
       required={required}
       id={id}
       loading={loading}
+      deleteOnUnmount={deleteOnUnmount}
     >
       {prefix}
       <Input
