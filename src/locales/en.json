@@ -46,6 +46,17 @@
           "capitalEnd": "Capital End",
           "goalProgress": "Goal Progress"
         }
+      },
+      "strategies-growth-chart": {
+        "title": "All Strategies Growth",
+        "xAxisTitle": "Year (Age)",
+        "yAxisTitle": "Capital",
+        "year": "Year",
+        "contributions": "Contributions",
+        "tooltip": {
+          "year": "Year",
+          "age": "Age"
+        }
       }
     },
     "ui": {

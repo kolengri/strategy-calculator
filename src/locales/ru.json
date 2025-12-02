@@ -46,6 +46,17 @@
           "capitalEnd": "Капитал на конец",
           "goalProgress": "Прогресс к цели"
         }
+      },
+      "strategies-growth-chart": {
+        "title": "Рост всех стратегий",
+        "xAxisTitle": "Год (Возраст)",
+        "yAxisTitle": "Капитал",
+        "year": "Год",
+        "contributions": "Вложения",
+        "tooltip": {
+          "year": "Год",
+          "age": "Возраст"
+        }
       }
     }
   },

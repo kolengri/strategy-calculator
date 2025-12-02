@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { StrategyForm } from "@/components/features/strategy-form";
 import { CapitalGrowthTable } from "@/components/features/capital-growth-table";
+import { StrategiesGrowthChart } from "@/components/features/strategies-growth-chart";
 import { useEffect, useState } from "react";
 
 export function Home() {
@@ -23,6 +24,9 @@ export function Home() {
   return (
     <BaseLayout>
       <title>{t("app.title", { title: t("home.title") })}</title>
+      <div className="mb-8">
+        <StrategiesGrowthChart />
+      </div>
       <Tabs
         defaultValue={activeStrategyId}
         onValueChange={setActiveStrategyId}
