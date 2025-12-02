@@ -90,29 +90,29 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
       label: t("components.features.strategy-form.summary.finalCapital"),
       value: formatCurrency(summary.finalCapital),
       icon: BadgeDollarSign,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-100 dark:bg-green-900/30",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
     },
     {
       label: t("components.features.strategy-form.summary.totalContributions"),
       value: formatCurrency(summary.totalContributions),
       icon: PiggyBank,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-100 dark:bg-blue-900/30",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
     },
     {
       label: t("components.features.strategy-form.summary.totalReturns"),
       value: `+${formatCurrency(summary.totalReturns)}`,
       icon: TrendingUp,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bgColor: "bg-emerald-100 dark:bg-emerald-900/30",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
     },
     {
       label: t("components.features.strategy-form.summary.totalTaxes"),
       value: `-${formatCurrency(summary.totalTaxes)}`,
       icon: TrendingDown,
-      color: "text-red-600 dark:text-red-400",
-      bgColor: "bg-red-100 dark:bg-red-900/30",
+      color: "text-red-600",
+      bgColor: "bg-red-50",
     },
     {
       label: t(
@@ -124,46 +124,46 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         { rate: strategy.inflationRate }
       ),
       icon: Percent,
-      color: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-100 dark:bg-purple-900/30",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
     },
     {
       label: t("components.features.strategy-form.summary.yearsToGoal"),
       value: `${summary.yearsToGoal}`,
       icon: Calendar,
-      color: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-100 dark:bg-orange-900/30",
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
     },
   ];
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <TrendingUp className="size-5 text-primary" />
+    <Card className="border-primary/20 bg-gradient-to-br from-primary/3 to-transparent">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <TrendingUp className="size-4 text-primary" />
           {t("components.features.strategy-form.summary.title")}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {items.map((item) => (
             <div
               key={item.label}
-              className="flex flex-col gap-2 p-4 rounded-xl bg-background border"
+              className="flex flex-col gap-1.5 p-3 rounded-lg bg-background/80 border border-border/50"
             >
-              <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-lg ${item.bgColor}`}>
-                  <item.icon className={`size-4 ${item.color}`} />
+              <div className="flex items-center gap-1.5">
+                <div className={`p-1.5 rounded-md ${item.bgColor}`}>
+                  <item.icon className={`size-3.5 ${item.color}`} />
                 </div>
-                <span className="text-sm text-muted-foreground">
+                <span className="text-xs text-muted-foreground truncate">
                   {item.label}
                 </span>
               </div>
-              <span className={`text-xl font-bold ${item.color}`}>
+              <span className={`text-base font-bold ${item.color}`}>
                 {item.value}
               </span>
               {item.description && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[10px] text-muted-foreground leading-tight">
                   {item.description}
                 </span>
               )}
@@ -172,24 +172,24 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         </div>
 
         {/* Return rates */}
-        <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-4">
-          <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
-            <span className="text-sm text-muted-foreground">
+        <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-3">
+          <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
+            <span className="text-xs text-muted-foreground">
               {t("components.features.strategy-form.summary.averageYearlyReturn")}
             </span>
-            <span className="font-semibold text-green-600 dark:text-green-400">
+            <span className="font-semibold text-sm text-green-600">
               {formatPercentage(summary.averageYearlyReturn)}
             </span>
           </div>
-          <div className="flex justify-between items-center p-3 rounded-lg bg-muted/50">
-            <span className="text-sm text-muted-foreground">
+          <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
+            <span className="text-xs text-muted-foreground">
               {t("components.features.strategy-form.summary.effectiveReturn")}
             </span>
             <span
-              className={`font-semibold ${
+              className={`font-semibold text-sm ${
                 summary.effectiveReturnAfterInflation >= 0
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
+                  ? "text-green-600"
+                  : "text-red-600"
               }`}
             >
               {formatPercentage(summary.effectiveReturnAfterInflation)}
@@ -200,4 +200,3 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     </Card>
   );
 };
-

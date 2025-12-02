@@ -80,28 +80,28 @@ export const DelayCostInfo = ({
   const currentCapital = delayDataList[0]?.currentCapital || 0;
 
   return (
-    <Card className="border-orange-200 dark:border-orange-900 bg-orange-50/50 dark:bg-orange-950/20">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <AlertCircle className="size-5 text-orange-600 dark:text-orange-400" />
+    <Card className="border-orange-200 bg-orange-50/30">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <AlertCircle className="size-4 text-orange-600" />
           {t("components.features.delay-cost-info.title")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="flex items-center justify-between p-3 bg-background rounded-lg border">
-            <span className="text-sm text-muted-foreground">
+      <CardContent className="space-y-3">
+        <div className="grid grid-cols-2 gap-2">
+          <div className="flex items-center justify-between p-2 bg-background rounded-lg border text-sm">
+            <span className="text-muted-foreground">
               {t("components.features.delay-cost-info.currentCapital")}
             </span>
-            <span className="font-semibold text-lg">
+            <span className="font-semibold">
               {formatCurrency(currentCapital)}
             </span>
           </div>
-          <div className="flex items-center justify-between p-3 bg-background rounded-lg border">
-            <span className="text-sm text-muted-foreground">
+          <div className="flex items-center justify-between p-2 bg-background rounded-lg border text-sm">
+            <span className="text-muted-foreground">
               {t("components.features.delay-cost-info.currentYearAtGoal")}
             </span>
-            <span className="font-semibold text-lg">
+            <span className="font-semibold">
               {delayDataList[0]?.currentYearAtGoal || 0}
             </span>
           </div>
@@ -111,34 +111,34 @@ export const DelayCostInfo = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>
+                <TableHead className="text-xs">
                   {t("components.features.delay-cost-info.table.delayYears")}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t("components.features.delay-cost-info.table.ageAtStart")}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t("components.features.delay-cost-info.table.yearAtGoal")}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t(
                     "components.features.delay-cost-info.table.delayedCapital"
                   )}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t("components.features.delay-cost-info.table.cost")}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t(
                     "components.features.delay-cost-info.table.costPercentage"
                   )}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t(
                     "components.features.delay-cost-info.table.requiredInitial"
                   )}
                 </TableHead>
-                <TableHead className="text-right">
+                <TableHead className="text-right text-xs">
                   {t(
                     "components.features.delay-cost-info.table.requiredMonthly"
                   )}
@@ -148,32 +148,32 @@ export const DelayCostInfo = ({
             <TableBody>
               {delayDataList.map((data) => (
                 <TableRow key={data.delayYears}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium text-sm">
                     {t("components.features.delay-cost-info.table.yearsLabel", {
                       years: data.delayYears,
                     })}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right text-sm">
                     {strategy.currentAge + data.delayYears}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right text-sm">
                     {data.delayedYearAtGoal}
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right text-sm">
                     {formatCurrency(data.delayedCapital)}
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-orange-700 dark:text-orange-300">
+                  <TableCell className="text-right font-semibold text-sm text-orange-700">
                     -{formatCurrency(data.cost)}
                   </TableCell>
-                  <TableCell className="text-right text-orange-600 dark:text-orange-400">
+                  <TableCell className="text-right text-sm text-orange-600">
                     -{formatPercentage(data.costPercentage)}
                   </TableCell>
-                  <TableCell className="text-right text-blue-700 dark:text-blue-300">
+                  <TableCell className="text-right text-sm text-blue-700">
                     {data.requiredInitialAmount !== null
                       ? formatCurrency(data.requiredInitialAmount)
                       : "-"}
                   </TableCell>
-                  <TableCell className="text-right text-blue-700 dark:text-blue-300">
+                  <TableCell className="text-right text-sm text-blue-700">
                     {data.requiredMonthlyContribution !== null
                       ? formatCurrency(data.requiredMonthlyContribution)
                       : "-"}
@@ -184,7 +184,7 @@ export const DelayCostInfo = ({
           </Table>
         </div>
 
-        <p className="text-sm text-muted-foreground italic">
+        <p className="text-xs text-muted-foreground">
           {t("components.features.delay-cost-info.description", {
             stepYears,
           })}

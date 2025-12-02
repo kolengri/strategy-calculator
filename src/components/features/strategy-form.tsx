@@ -87,15 +87,18 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
 
   return (
     <Form form={form}>
-      <div className="space-y-6">
-        {/* Basic Information Section */}
-        <Card>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold">
-              {t("components.features.strategy-form.sections.basic")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>{t("components.features.strategy-form.sections.basic")}</span>
+            <form.SubmitButton size="sm">
+              {t("components.features.strategy-form.submit-button.save")}
+            </form.SubmitButton>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* First row: Name + Type toggle */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <form.AppField name="name">
               {(field) => (
                 <field.TextField
@@ -114,40 +117,50 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                     value: type,
                   }))}
                   required
+                  size="xs"
+                />
+              )}
+            </form.AppField>
+          </div>
+
+          {/* Second row: Ages + Goal (if goal-based) */}
+          <div className={`grid gap-3 ${isGoalBased ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-4'}`}>
+            <form.AppField name="currentAge">
+              {(field) => (
+                <field.NumberField
+                  label={t("components.features.strategy-form.fields.currentAge")}
+                  required
+                  min={AGE_LIMITS.MIN}
+                  max={AGE_LIMITS.MAX}
                 />
               )}
             </form.AppField>
 
-            <div className="grid grid-cols-2 gap-3">
-              <form.AppField name="currentAge">
-                {(field) => (
-                  <field.NumberField
-                    label={t(
-                      "components.features.strategy-form.fields.currentAge"
-                    )}
-                    required
-                    min={AGE_LIMITS.MIN}
-                    max={AGE_LIMITS.MAX}
-                  />
-                )}
-              </form.AppField>
+            <form.AppField name="goalAge">
+              {(field) => (
+                <field.NumberField
+                  label={t("components.features.strategy-form.fields.goalAge")}
+                  required
+                  min={AGE_LIMITS.MIN}
+                  max={AGE_LIMITS.MAX}
+                  placeholder="65"
+                />
+              )}
+            </form.AppField>
 
-              <form.AppField name="goalAge">
-                {(field) => (
-                  <field.NumberField
-                    label={t(
-                      "components.features.strategy-form.fields.goalAge"
-                    )}
-                    required
-                    min={AGE_LIMITS.MIN}
-                    max={AGE_LIMITS.MAX}
-                    placeholder="65"
-                  />
-                )}
-              </form.AppField>
-            </div>
+            <form.AppField name="initialAmount">
+              {(field) => (
+                <field.NumberField
+                  label={t("components.features.strategy-form.fields.initialAmount")}
+                  required
+                  min={0}
+                  step={1000}
+                  placeholder="0"
+                />
+              )}
+            </form.AppField>
 
-            {isGoalBased && (
+            {isGoalBased ? (
               <form.AppField name="goal">
                 {(field) => (
                   <field.NumberField
@@ -159,128 +172,76 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                   />
                 )}
               </form.AppField>
-            )}
-
-            {isGoalBased && (
-              <div className="rounded-lg border bg-muted/40 px-4 py-3">
-                <p className="text-sm font-medium text-muted-foreground">
-                  {t(
-                    "components.features.strategy-form.goalBasedSummary.title"
-                  )}
-                </p>
-                <p className="text-2xl font-semibold">
-                  {hasGoalContribution
-                    ? formatCurrency(calculatedGoalContribution)
-                    : t(
-                        "components.features.strategy-form.goalBasedSummary.placeholder"
-                      )}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {t(
-                    "components.features.strategy-form.goalBasedSummary.description"
-                  )}
-                </p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Financial Details Section */}
-        <Card>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold">
-              {t("components.features.strategy-form.sections.financial")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <form.AppField name="initialAmount">
+            ) : (
+              <form.AppField name="monthlyContribution">
                 {(field) => (
                   <field.NumberField
-                    label={t(
-                      "components.features.strategy-form.fields.initialAmount"
-                    )}
+                    label={t("components.features.strategy-form.fields.monthlyContribution")}
                     required
                     min={0}
-                    step={1000}
+                    step={100}
                     placeholder="0"
                   />
                 )}
               </form.AppField>
+            )}
+          </div>
 
-              {!isGoalBased && (
-                <form.AppField name="monthlyContribution">
-                  {(field) => (
-                    <field.NumberField
-                      label={t(
-                        "components.features.strategy-form.fields.monthlyContribution"
-                      )}
-                      required
-                      min={0}
-                      step={100}
-                      placeholder="0"
-                    />
-                  )}
-                </form.AppField>
+          {/* Third row: Financial parameters */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <form.AppField name="selectedFund">
+              {(field) => (
+                <field.SelectField
+                  label={t("components.features.strategy-form.fields.selectedFund")}
+                  options={FUNDS.map((fund) => ({
+                    label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(0)}%)`,
+                    value: fund.id,
+                  }))}
+                  required
+                />
               )}
-            </div>
+            </form.AppField>
 
-            <div className="grid grid-cols-2 gap-3">
-              <form.AppField name="selectedFund">
-                {(field) => (
-                  <field.SelectField
-                    label={t(
-                      "components.features.strategy-form.fields.selectedFund"
-                    )}
-                    options={FUNDS.map((fund) => ({
-                      label: `${fund.name} (${t(
-                        "components.features.strategy-form.fundYearlyReturn",
-                        { return: (fund.yearlyReturn * 100).toFixed(1) }
-                      )})`,
-                      value: fund.id,
-                    }))}
-                    required
-                  />
-                )}
-              </form.AppField>
+            <form.AppField name="inflationRate">
+              {(field) => (
+                <field.NumberField
+                  label={t("components.features.strategy-form.fields.inflationRate")}
+                  required
+                  min={0}
+                  max={100}
+                  step={0.1}
+                  placeholder="3.0"
+                />
+              )}
+            </form.AppField>
 
-              <form.AppField name="inflationRate">
-                {(field) => (
-                  <field.NumberField
-                    label={t(
-                      "components.features.strategy-form.fields.inflationRate"
-                    )}
-                    required
-                    min={0}
-                    max={100}
-                    step={0.1}
-                    placeholder="3.0"
-                  />
-                )}
-              </form.AppField>
-              <form.AppField name="taxRate">
-                {(field) => (
-                  <field.NumberField
-                    label={t(
-                      "components.features.strategy-form.fields.taxRate"
-                    )}
-                    required
-                    min={0}
-                    max={100}
-                  />
-                )}
-              </form.AppField>
-            </div>
-          </CardContent>
-        </Card>
+            <form.AppField name="taxRate">
+              {(field) => (
+                <field.NumberField
+                  label={t("components.features.strategy-form.fields.taxRate")}
+                  required
+                  min={0}
+                  max={100}
+                />
+              )}
+            </form.AppField>
 
-        {/* Submit Button */}
-        <div className="flex justify-end pt-6">
-          <form.SubmitButton className="min-w-[140px] shadow-lg hover:shadow-xl">
-            {t("components.features.strategy-form.submit-button.save")}
-          </form.SubmitButton>
-        </div>
-      </div>
+            {/* Goal-based summary or empty space */}
+            {isGoalBased && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 flex flex-col justify-center">
+                <p className="text-xs text-muted-foreground">
+                  {t("components.features.strategy-form.goalBasedSummary.title")}
+                </p>
+                <p className="text-lg font-semibold text-primary">
+                  {hasGoalContribution
+                    ? formatCurrency(calculatedGoalContribution)
+                    : "—"}
+                </p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </Form>
   );
 };
