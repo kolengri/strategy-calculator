@@ -7,21 +7,26 @@ import ruTranslations from "../locales/ru.json";
 export const availableLocales = ["en", "ru"] as const;
 export type AvailableLocales = (typeof availableLocales)[number];
 
-const LANGUAGE_COOKIE_NAME = "i18n_language";
-const COOKIE_MAX_AGE_DAYS = 365;
+const LANGUAGE_STORAGE_KEY = "i18n_language";
 
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`));
-  return match?.[2] ?? null;
+function getStoredLanguage(): string | null {
+  try {
+    return localStorage.getItem(LANGUAGE_STORAGE_KEY);
+  } catch {
+    return null;
+  }
 }
 
-export function setLanguageCookie(language: AvailableLocales): void {
-  const maxAge = COOKIE_MAX_AGE_DAYS * 24 * 60 * 60;
-  document.cookie = `${LANGUAGE_COOKIE_NAME}=${language}; path=/; max-age=${maxAge}; SameSite=Lax`;
+export function setStoredLanguage(language: AvailableLocales): void {
+  try {
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+  } catch {
+    // localStorage may be unavailable in some contexts
+  }
 }
 
 function getInitialLanguage(): AvailableLocales {
-  const savedLanguage = getCookie(LANGUAGE_COOKIE_NAME);
+  const savedLanguage = getStoredLanguage();
   if (
     savedLanguage &&
     availableLocales.includes(savedLanguage as AvailableLocales)
