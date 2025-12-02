@@ -11,6 +11,7 @@ export type TextFieldProps = {
 
 export const TextField = ({
   label,
+  hint,
   required,
   loading,
   prefix,
@@ -24,6 +25,7 @@ export const TextField = ({
     <FieldWrapper
       field={field}
       label={label}
+      hint={hint}
       required={required}
       id={id}
       loading={loading}

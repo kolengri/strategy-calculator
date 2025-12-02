@@ -37,19 +37,29 @@
         },
         "type": {
           "age-based": "Age Based",
-          "goal-based": "Goal Based"
+          "age-basedHint": "Set a fixed monthly contribution and see how much capital you'll accumulate by your goal age",
+          "goal-based": "Goal Based",
+          "goal-basedHint": "Set a target amount and the calculator will determine the required monthly contribution"
         },
         "fields": {
           "name": "Strategy Name",
           "type": "Strategy Type",
           "currentAge": "Current Age",
+          "currentAgeHint": "Your current age to start calculating from",
           "goalAge": "Goal Age",
+          "goalAgeHint": "The age by which you want to reach your financial goal or stop investing",
           "goal": "Goal Amount",
+          "goalHint": "The target amount you want to accumulate by your goal age",
           "initialAmount": "Initial Amount",
+          "initialAmountHint": "The lump sum you can invest right now to start growing",
           "monthlyContribution": "Monthly Contribution",
+          "monthlyContributionHint": "The amount you plan to invest every month consistently",
           "selectedFund": "Investment Fund",
+          "selectedFundHint": "The investment fund determines your expected yearly return rate",
           "inflationRate": "Inflation Rate (%)",
-          "taxRate": "Tax Rate (%)"
+          "inflationRateHint": "Expected annual inflation rate to calculate real purchasing power of your future money",
+          "taxRate": "Tax Rate (%)",
+          "taxRateHint": "Tax rate applied to investment gains (capital gains tax)"
         },
         "fundYearlyReturn": "{{return}}% yearly",
         "sections": {
@@ -65,14 +75,22 @@
         "summary": {
           "title": "Final Summary",
           "finalCapital": "Final Capital",
+          "finalCapitalHint": "The total amount you will have at your goal age, including all contributions and investment returns minus taxes",
           "totalContributions": "Total Contributions",
+          "totalContributionsHint": "The sum of your initial investment plus all monthly contributions over the investment period",
           "totalReturns": "Investment Returns",
+          "totalReturnsHint": "Total profit earned from your investments before taxes",
           "totalTaxes": "Total Taxes",
+          "totalTaxesHint": "Total amount paid in taxes on investment gains over the entire period",
           "inflationAdjustedCapital": "Purchasing Power",
+          "inflationAdjustedCapitalHint": "What your final capital will be worth in today's money, accounting for inflation",
           "inflationAdjustedCapitalDescription": "In today's prices adjusted for {{rate}}% inflation",
           "yearsToGoal": "Years to Goal",
+          "yearsToGoalHint": "Number of years from now until you reach your goal age",
           "averageYearlyReturn": "Average Yearly Return",
-          "effectiveReturn": "Effective Return after Inflation"
+          "averageYearlyReturnHint": "The nominal annual return rate of your selected investment fund before inflation",
+          "effectiveReturn": "Effective Return after Inflation",
+          "effectiveReturnHint": "Real return rate after subtracting inflation — shows actual growth in purchasing power"
         }
       },
       "capital-growth-table": {
@@ -81,12 +99,19 @@
           "year": "Year",
           "age": "Age",
           "capitalStart": "Capital Start",
+          "capitalStartHint": "The amount of capital at the beginning of the year",
           "contributions": "Contributions",
+          "contributionsHint": "Total monthly contributions added during the year (12 months × monthly contribution)",
           "return": "Return",
+          "returnHint": "Investment gains earned during the year based on the fund's return rate",
           "tax": "Tax",
+          "taxHint": "Taxes paid on investment gains this year",
           "withdrawal": "Withdrawal",
+          "withdrawalHint": "Money withdrawn for life events (home purchase, education, etc.)",
           "capitalEnd": "Capital End",
-          "goalProgress": "Goal Progress"
+          "capitalEndHint": "The total amount at the end of the year after all contributions, returns, taxes, and withdrawals",
+          "goalProgress": "Goal Progress",
+          "goalProgressHint": "Percentage of your target goal achieved so far"
         }
       },
       "strategies-growth-chart": {
@@ -110,11 +135,17 @@
         "description": "If you start investing every {{stepYears}} years later, you will lose the indicated amount from your final capital.",
         "table": {
           "delayYears": "Delay",
+          "delayYearsHint": "Number of years you would delay starting your investments",
           "ageAtStart": "Age at start",
+          "ageAtStartHint": "Your age when you would actually start investing",
           "yearAtGoal": "Year at goal",
+          "yearAtGoalHint": "Calendar year when you would reach your goal age",
           "delayedCapital": "Capital with delay",
+          "delayedCapitalHint": "How much capital you would accumulate if you started investing later",
           "cost": "Loss",
+          "costHint": "Amount of money lost due to delayed start compared to starting now",
           "costPercentage": "Loss (%)",
+          "costPercentageHint": "Percentage of final capital lost due to the delay",
           "requiredInitial": "Required initial capital",
           "requiredInitialDescription": "The initial lump sum you would need to invest to catch up and reach the same final capital despite starting later",
           "requiredMonthly": "Required monthly contribution",

@@ -78,26 +78,116 @@ export const DelayCostInfo = ({
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs">
-                  {t("components.features.delay-cost-info.table.delayYears")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.delayYears"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.delayYearsHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.delay-cost-info.table.ageAtStart")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.ageAtStart"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.ageAtStartHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.delay-cost-info.table.yearAtGoal")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.yearAtGoal"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.yearAtGoalHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t(
-                    "components.features.delay-cost-info.table.delayedCapital"
-                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.delayedCapital"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.delayedCapitalHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.delay-cost-info.table.cost")}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t("components.features.delay-cost-info.table.cost")}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.costHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t(
-                    "components.features.delay-cost-info.table.costPercentage"
-                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.costPercentage"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.costPercentageHint"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
                   <TooltipProvider>

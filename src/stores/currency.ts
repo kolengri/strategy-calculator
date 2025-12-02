@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { CURRENCIES, type CurrencyCode } from "@/utils/currencies";
+import { type CurrencyCode } from "@/utils/currencies";
 
 const CURRENCY_STORE_KEY = "currency-store" as const;
 

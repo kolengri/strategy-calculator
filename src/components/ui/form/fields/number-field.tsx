@@ -11,6 +11,7 @@ export type NumberFieldProps = {
 
 export const NumberField = ({
   label,
+  hint,
   required,
   loading,
   prefix,
@@ -25,6 +26,7 @@ export const NumberField = ({
     <FieldWrapper
       field={field}
       label={label}
+      hint={hint}
       required={required}
       id={id}
       loading={loading}

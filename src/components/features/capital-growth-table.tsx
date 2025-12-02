@@ -20,7 +20,38 @@ import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 import { ExportCSVButton } from "./export-csv-button";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, HelpCircle } from "lucide-react";
+
+type TableColumn = {
+  key: string;
+  label: string;
+  hint?: string;
+  align?: "left" | "right";
+};
+
+const TableHeadWithHint = ({ column }: { column: TableColumn }) => {
+  const alignClass = column.align === "right" ? "text-right" : "";
+
+  if (!column.hint) {
+    return <TableHead className={`text-xs ${alignClass}`}>{column.label}</TableHead>;
+  }
+
+  return (
+    <TableHead className={`text-xs ${alignClass}`}>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+            {column.label}
+            <HelpCircle className="size-3 text-muted-foreground" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{column.hint}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </TableHead>
+  );
+};
 
 type CapitalGrowthTableProps = {
   strategy: Strategy;
@@ -32,6 +63,62 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
   const growthData = useMemo(
     () => calculateCapitalGrowth(strategy),
     [strategy]
+  );
+
+  const columns: TableColumn[] = useMemo(
+    () => [
+      {
+        key: "year",
+        label: t("components.features.capital-growth-table.columns.year"),
+      },
+      {
+        key: "age",
+        label: t("components.features.capital-growth-table.columns.age"),
+      },
+      {
+        key: "capitalStart",
+        label: t("components.features.capital-growth-table.columns.capitalStart"),
+        hint: t("components.features.capital-growth-table.columns.capitalStartHint"),
+        align: "right",
+      },
+      {
+        key: "contributions",
+        label: t("components.features.capital-growth-table.columns.contributions"),
+        hint: t("components.features.capital-growth-table.columns.contributionsHint"),
+        align: "right",
+      },
+      {
+        key: "return",
+        label: t("components.features.capital-growth-table.columns.return"),
+        hint: t("components.features.capital-growth-table.columns.returnHint"),
+        align: "right",
+      },
+      {
+        key: "tax",
+        label: t("components.features.capital-growth-table.columns.tax"),
+        hint: t("components.features.capital-growth-table.columns.taxHint"),
+        align: "right",
+      },
+      {
+        key: "withdrawal",
+        label: t("components.features.capital-growth-table.columns.withdrawal"),
+        hint: t("components.features.capital-growth-table.columns.withdrawalHint"),
+        align: "right",
+      },
+      {
+        key: "capitalEnd",
+        label: t("components.features.capital-growth-table.columns.capitalEnd"),
+        hint: t("components.features.capital-growth-table.columns.capitalEndHint"),
+        align: "right",
+      },
+      {
+        key: "goalProgress",
+        label: t("components.features.capital-growth-table.columns.goalProgress"),
+        hint: t("components.features.capital-growth-table.columns.goalProgressHint"),
+        align: "right",
+      },
+    ],
+    [t]
   );
 
   if (growthData.length === 0) {
@@ -55,33 +142,9 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-xs">
-                  {t("components.features.capital-growth-table.columns.year")}
-                </TableHead>
-                <TableHead className="text-xs">
-                  {t("components.features.capital-growth-table.columns.age")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.capitalStart")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.contributions")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.return")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.tax")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.withdrawal")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.capitalEnd")}
-                </TableHead>
-                <TableHead className="text-right text-xs">
-                  {t("components.features.capital-growth-table.columns.goalProgress")}
-                </TableHead>
+                {columns.map((column) => (
+                  <TableHeadWithHint key={column.key} column={column} />
+                ))}
               </TableRow>
             </TableHeader>
             <TableBody>

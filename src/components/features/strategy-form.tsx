@@ -1,4 +1,4 @@
-import { useMemo, useEffect, type RefObject } from "react";
+import { useMemo, type RefObject } from "react";
 import type { Strategy } from "@/stores/strategy";
 import { Form, useAppForm } from "../ui/form";
 import { STRATEGY_TYPES, useStrategyStore } from "@/stores/strategy";
@@ -9,13 +9,6 @@ import { FUNDS, getFundById } from "@/db/funds";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { calculateGoalBasedMonthlyContribution } from "@/utils/calculate-capital-growth";
 import { AGE_LIMITS } from "@/utils/constants";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { HelpCircle } from "lucide-react";
 
 type StrategyFormProps = {
   defaultValues: Strategy;
@@ -120,6 +113,7 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.FancyRadioButton
                   label={t("components.features.strategy-form.fields.type")}
+                  hint={t(`components.features.strategy-form.type.${formValues.type}Hint`)}
                   options={STRATEGY_TYPES.map((type) => ({
                     label: t(`components.features.strategy-form.type.${type}`),
                     value: type,
@@ -145,6 +139,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                   label={t(
                     "components.features.strategy-form.fields.currentAge"
                   )}
+                  hint={t(
+                    "components.features.strategy-form.fields.currentAgeHint"
+                  )}
                   required
                   min={AGE_LIMITS.MIN}
                   max={AGE_LIMITS.MAX}
@@ -156,6 +153,7 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.NumberField
                   label={t("components.features.strategy-form.fields.goalAge")}
+                  hint={t("components.features.strategy-form.fields.goalAgeHint")}
                   required
                   min={AGE_LIMITS.MIN}
                   max={AGE_LIMITS.MAX}
@@ -170,6 +168,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                   label={t(
                     "components.features.strategy-form.fields.initialAmount"
                   )}
+                  hint={t(
+                    "components.features.strategy-form.fields.initialAmountHint"
+                  )}
                   required
                   min={0}
                   step={1000}
@@ -183,6 +184,7 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                 {(field) => (
                   <field.NumberField
                     label={t("components.features.strategy-form.fields.goal")}
+                    hint={t("components.features.strategy-form.fields.goalHint")}
                     required
                     min={0}
                     step={1000}
@@ -196,6 +198,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                   <field.NumberField
                     label={t(
                       "components.features.strategy-form.fields.monthlyContribution"
+                    )}
+                    hint={t(
+                      "components.features.strategy-form.fields.monthlyContributionHint"
                     )}
                     required
                     min={0}
@@ -215,6 +220,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                   label={t(
                     "components.features.strategy-form.fields.selectedFund"
                   )}
+                  hint={t(
+                    "components.features.strategy-form.fields.selectedFundHint"
+                  )}
                   options={FUNDS.map((fund) => ({
                     label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(
                       0
@@ -232,6 +240,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                   label={t(
                     "components.features.strategy-form.fields.inflationRate"
                   )}
+                  hint={t(
+                    "components.features.strategy-form.fields.inflationRateHint"
+                  )}
                   required
                   min={0}
                   max={100}
@@ -245,6 +256,7 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.NumberField
                   label={t("components.features.strategy-form.fields.taxRate")}
+                  hint={t("components.features.strategy-form.fields.taxRateHint")}
                   required
                   min={0}
                   max={100}

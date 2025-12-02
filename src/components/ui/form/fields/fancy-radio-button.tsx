@@ -25,6 +25,7 @@ export type FancyRadioButtonProps<T extends string> = {
 
 export const FancyRadioButton = <T extends string>({
   label,
+  hint,
   required,
   loading,
   prefix,
@@ -100,6 +101,7 @@ export const FancyRadioButton = <T extends string>({
     <FieldWrapper
       field={field}
       label={label}
+      hint={hint}
       required={required}
       id={id}
       loading={loading}

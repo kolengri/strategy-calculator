@@ -13,7 +13,14 @@ import {
   Calendar,
   BadgeDollarSign,
   TrendingDown,
+  HelpCircle,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type StrategySummaryProps = {
   strategy: Strategy;
@@ -88,6 +95,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
   const items = [
     {
       label: t("components.features.strategy-form.summary.finalCapital"),
+      hint: t("components.features.strategy-form.summary.finalCapitalHint"),
       value: formatCurrency(summary.finalCapital),
       icon: BadgeDollarSign,
       color: "text-emerald-600",
@@ -95,6 +103,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     },
     {
       label: t("components.features.strategy-form.summary.totalContributions"),
+      hint: t("components.features.strategy-form.summary.totalContributionsHint"),
       value: formatCurrency(summary.totalContributions),
       icon: PiggyBank,
       color: "text-blue-600",
@@ -102,6 +111,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     },
     {
       label: t("components.features.strategy-form.summary.totalReturns"),
+      hint: t("components.features.strategy-form.summary.totalReturnsHint"),
       value: `+${formatCurrency(summary.totalReturns)}`,
       icon: TrendingUp,
       color: "text-green-600",
@@ -109,6 +119,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     },
     {
       label: t("components.features.strategy-form.summary.totalTaxes"),
+      hint: t("components.features.strategy-form.summary.totalTaxesHint"),
       value: `-${formatCurrency(summary.totalTaxes)}`,
       icon: TrendingDown,
       color: "text-red-600",
@@ -118,6 +129,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
       label: t(
         "components.features.strategy-form.summary.inflationAdjustedCapital"
       ),
+      hint: t("components.features.strategy-form.summary.inflationAdjustedCapitalHint"),
       value: formatCurrency(summary.inflationAdjustedCapital),
       description: t(
         "components.features.strategy-form.summary.inflationAdjustedCapitalDescription",
@@ -129,6 +141,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     },
     {
       label: t("components.features.strategy-form.summary.yearsToGoal"),
+      hint: t("components.features.strategy-form.summary.yearsToGoalHint"),
       value: `${summary.yearsToGoal}`,
       icon: Calendar,
       color: "text-orange-600",
@@ -155,9 +168,19 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
                 <div className={`p-1.5 rounded-md ${item.bgColor}`}>
                   <item.icon className={`size-3.5 ${item.color}`} />
                 </div>
-                <span className="text-xs text-muted-foreground truncate">
-                  {item.label}
-                </span>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center gap-1 cursor-help">
+                      <span className="text-xs text-muted-foreground truncate">
+                        {item.label}
+                      </span>
+                      <HelpCircle className="size-3 text-muted-foreground/50 flex-shrink-0" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{item.hint}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               <span className={`text-base font-bold ${item.color}`}>
                 {item.value}
@@ -174,17 +197,33 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         {/* Return rates */}
         <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-3">
           <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
-            <span className="text-xs text-muted-foreground">
-              {t("components.features.strategy-form.summary.averageYearlyReturn")}
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="flex items-center gap-1 cursor-help text-xs text-muted-foreground">
+                  {t("components.features.strategy-form.summary.averageYearlyReturn")}
+                  <HelpCircle className="size-3 text-muted-foreground/50" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("components.features.strategy-form.summary.averageYearlyReturnHint")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <span className="font-semibold text-sm text-green-600">
               {formatPercentage(summary.averageYearlyReturn)}
             </span>
           </div>
           <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
-            <span className="text-xs text-muted-foreground">
-              {t("components.features.strategy-form.summary.effectiveReturn")}
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="flex items-center gap-1 cursor-help text-xs text-muted-foreground">
+                  {t("components.features.strategy-form.summary.effectiveReturn")}
+                  <HelpCircle className="size-3 text-muted-foreground/50" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("components.features.strategy-form.summary.effectiveReturnHint")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <span
               className={`font-semibold text-sm ${
                 summary.effectiveReturnAfterInflation >= 0

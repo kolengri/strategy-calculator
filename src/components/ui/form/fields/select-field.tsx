@@ -32,6 +32,7 @@ export type SelectFieldProps<T extends string> = {
 
 export const SelectField = <T extends string>({
   label,
+  hint,
   required,
   loading,
   prefix,
@@ -102,6 +103,7 @@ export const SelectField = <T extends string>({
     <FieldWrapper
       field={field}
       label={label}
+      hint={hint}
       required={required}
       id={id}
       loading={loading}
