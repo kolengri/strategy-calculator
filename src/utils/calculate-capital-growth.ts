@@ -300,7 +300,7 @@ export function calculateRequiredInitialAmount(
   }
 
   const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
-  
+
   // Binary search for initial amount
   let low = 0;
   let high = targetCapital;
@@ -344,7 +344,7 @@ export function calculateRequiredMonthlyContribution(
   }
 
   const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
-  
+
   // Binary search for monthly contribution
   // Upper bound: assume we need to contribute the entire target (worst case)
   let low = 0;
