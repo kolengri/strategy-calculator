@@ -67,6 +67,7 @@ type StrategyStore = {
   removeStrategy: (id: string) => void;
   newBlankStrategy: () => void;
   updateStrategy: (strategy: Strategy) => void;
+  reorderStrategies: (strategies: Strategy[]) => void;
   resetStrategies: () => void;
 };
 
@@ -98,6 +99,7 @@ export const useStrategyStore = create<StrategyStore>()(
             s.id === strategy.id ? strategy : s
           ),
         })),
+      reorderStrategies: (strategies: Strategy[]) => set({ strategies }),
       resetStrategies: () => set({ strategies: [] }),
     }),
     { name: STRATEGY_STORE_KEY }

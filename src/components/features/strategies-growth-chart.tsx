@@ -238,7 +238,7 @@ export const StrategiesGrowthChart = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[600px] w-full">
+        <div className="h-[350px] sm:h-[450px] lg:h-[550px] w-full">
           <AgCharts
             options={chartOptions}
             style={{ height: "100%", width: "100%" }}

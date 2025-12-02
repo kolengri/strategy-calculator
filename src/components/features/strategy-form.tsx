@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, type RefObject } from "react";
 import type { Strategy } from "@/stores/strategy";
 import { Form, useAppForm } from "../ui/form";
 import { STRATEGY_TYPES, useStrategyStore } from "@/stores/strategy";
@@ -9,12 +9,20 @@ import { FUNDS, getFundById } from "@/db/funds";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { calculateGoalBasedMonthlyContribution } from "@/utils/calculate-capital-growth";
 import { AGE_LIMITS } from "@/utils/constants";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { HelpCircle } from "lucide-react";
 
 type StrategyFormProps = {
   defaultValues: Strategy;
+  formRef?: RefObject<HTMLFormElement | null>;
 };
 
-export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
+export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
   const { t } = useTranslation();
   const { updateStrategy } = useStrategyStore();
   const formatCurrency = useFormatCurrency();
@@ -86,7 +94,7 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
   const hasGoalContribution = calculatedGoalContribution > 0;
 
   return (
-    <Form form={form}>
+    <Form form={form} formRef={formRef}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">

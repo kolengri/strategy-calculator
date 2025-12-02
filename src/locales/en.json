@@ -8,6 +8,29 @@
       "header": {
         "title": "Strategy Calculator"
       },
+      "footer": {
+        "title": "Strategy Calculator",
+        "disclaimer": "For educational purposes only. Not financial advice."
+      },
+      "import-export": {
+        "import": "Import strategies",
+        "export": "Export strategies"
+      },
+      "export-csv": {
+        "title": "Export to CSV"
+      },
+      "what-if": {
+        "title": "What-If Scenarios",
+        "baseScenario": "Base scenario",
+        "scenarioReturn": "Return {{modifier}}",
+        "description": "See how different market returns would affect your final capital.",
+        "table": {
+          "scenario": "Scenario",
+          "finalCapital": "Final Capital",
+          "difference": "Difference",
+          "percentChange": "% Change"
+        }
+      },
       "strategy-form": {
         "submit-button": {
           "save": "Save"
@@ -122,6 +145,10 @@
     "addStrategy": "Add Strategy",
     "newStrategy": "New Strategy",
     "defaultStrategyName": "Default Strategy",
-    "title": "Home"
+    "title": "Home",
+    "shortcuts": {
+      "save": "Save (Ctrl+S)",
+      "new": "New strategy (Ctrl+N)"
+    }
   }
 }

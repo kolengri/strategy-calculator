@@ -8,6 +8,29 @@
       "header": {
         "title": "Калькулятор стратегий"
       },
+      "footer": {
+        "title": "Калькулятор стратегий",
+        "disclaimer": "Только для образовательных целей. Не является финансовой рекомендацией."
+      },
+      "import-export": {
+        "import": "Импорт стратегий",
+        "export": "Экспорт стратегий"
+      },
+      "export-csv": {
+        "title": "Экспорт в CSV"
+      },
+      "what-if": {
+        "title": "Сценарии «Что если»",
+        "baseScenario": "Базовый сценарий",
+        "scenarioReturn": "Доходность {{modifier}}",
+        "description": "Посмотрите, как разная доходность повлияет на итоговый капитал.",
+        "table": {
+          "scenario": "Сценарий",
+          "finalCapital": "Итоговый капитал",
+          "difference": "Разница",
+          "percentChange": "% изменения"
+        }
+      },
       "strategy-form": {
         "submit-button": {
           "save": "Сохранить"
@@ -101,6 +124,11 @@
   "home": {
     "title": "Главная",
     "addStrategy": "Добавить стратегию",
-    "newStrategy": "Новая стратегия"
+    "newStrategy": "Новая стратегия",
+    "defaultStrategyName": "Стратегия по умолчанию",
+    "shortcuts": {
+      "save": "Сохранить (Ctrl+S)",
+      "new": "Новая стратегия (Ctrl+N)"
+    }
   }
 }

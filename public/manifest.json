@@ -1,0 +1,20 @@
+{
+  "name": "Strategy Calculator",
+  "short_name": "StratCalc",
+  "description": "Investment strategy calculator with compound interest projections",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fdf9",
+  "theme_color": "#22c55e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"]
+}
+

@@ -1,6 +1,7 @@
 import logo from "@/assets/logo.svg";
 import { LanguageSelector } from "./language-selector";
 import { CurrencySelector } from "./currency-selector";
+import { StrategyImportExport } from "./strategy-import-export";
 import { useTranslation } from "react-i18next";
 
 export function Header() {
@@ -16,6 +17,7 @@ export function Header() {
         </h1>
       </div>
       <div className="flex items-center gap-1.5">
+        <StrategyImportExport />
         <CurrencySelector />
         <LanguageSelector />
       </div>

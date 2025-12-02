@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
+import { ExportCSVButton } from "./export-csv-button";
 
 type CapitalGrowthTableProps = {
   strategy: Strategy;
@@ -33,10 +34,13 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">
-          {t("components.features.capital-growth-table.title", {
-            name: strategy.name,
-          })}
+        <CardTitle className="text-base flex items-center justify-between">
+          <span>
+            {t("components.features.capital-growth-table.title", {
+              name: strategy.name,
+            })}
+          </span>
+          <ExportCSVButton strategy={strategy} />
         </CardTitle>
       </CardHeader>
       <CardContent>

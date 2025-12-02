@@ -34,6 +34,8 @@ export function calculateMonthlyReturn(yearlyReturn: number): number {
 export type StrategyFinancialParams = {
   fund: Fund;
   yearlyReturn: number;
+  /** Net yearly return after expense ratio */
+  netYearlyReturn: number;
   taxRate: number;
   monthlyReturn: number;
 };
@@ -49,11 +51,15 @@ export function getStrategyFinancialParams(
   if (!fund) return null;
 
   const yearlyReturn = fund.yearlyReturn;
+  // Subtract expense ratio from yearly return for net return
+  const netYearlyReturn = yearlyReturn - fund.expenseRatio;
+
   return {
     fund,
     yearlyReturn,
+    netYearlyReturn,
     taxRate: strategy.taxRate / 100,
-    monthlyReturn: calculateMonthlyReturn(yearlyReturn),
+    monthlyReturn: calculateMonthlyReturn(netYearlyReturn),
   };
 }
 
@@ -207,10 +213,10 @@ export function calculateCapitalGrowth(
     return [];
   }
 
-  const { yearlyReturn, monthlyReturn, taxRate } = params;
+  const { netYearlyReturn, monthlyReturn, taxRate } = params;
   const monthlyContribution = getStrategyMonthlyContribution(
     strategy,
-    yearlyReturn,
+    netYearlyReturn,
     taxRate
   );
   const strategyWithMonthlyContribution =
@@ -221,7 +227,7 @@ export function calculateCapitalGrowth(
   // Calculate target amount and years to goal
   const { targetAmount, yearsToGoal } = calculateTargetAmount(
     strategyWithMonthlyContribution,
-    yearlyReturn,
+    netYearlyReturn,
     taxRate
   );
 
@@ -347,8 +353,6 @@ export function calculateRequiredInitialAmount(
     return targetCapital;
   }
 
-  const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
-
   // Binary search for initial amount
   let low = 0;
   let high = targetCapital;
@@ -390,8 +394,6 @@ export function calculateRequiredMonthlyContribution(
   if (years <= 0) {
     return 0;
   }
-
-  const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
 
   // Binary search for monthly contribution
   // Upper bound: assume we need to contribute the entire target (worst case)
@@ -520,10 +522,10 @@ export function calculateDelayCost(
     };
   }
 
-  const { yearlyReturn, taxRate } = params;
+  const { netYearlyReturn, taxRate } = params;
   const monthlyContribution = getStrategyMonthlyContribution(
     strategy,
-    yearlyReturn,
+    netYearlyReturn,
     taxRate
   );
 
@@ -542,7 +544,7 @@ export function calculateDelayCost(
     currentCapital = calculateProjectedCapital(
       strategy.initialAmount,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       currentYearsToGoal
     );
@@ -571,7 +573,7 @@ export function calculateDelayCost(
       delayedCapital = calculateProjectedCapital(
         delayedInitialAmount,
         monthlyContribution,
-        yearlyReturn,
+        netYearlyReturn,
         taxRate,
         delayedYearsToGoal
       );
@@ -584,7 +586,7 @@ export function calculateDelayCost(
     currentYearsToGoal = estimateYearsToGoal(
       strategy.initialAmount,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       strategy.goal
     );
@@ -592,7 +594,7 @@ export function calculateDelayCost(
     currentCapital = calculateProjectedCapital(
       strategy.initialAmount,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       currentYearsToGoal
     );
@@ -612,7 +614,7 @@ export function calculateDelayCost(
     delayedYearsToGoal = estimateYearsToGoal(
       delayedInitialAmount,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       delayedGoal
     );
@@ -620,7 +622,7 @@ export function calculateDelayCost(
     delayedCapital = calculateProjectedCapital(
       delayedInitialAmount,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       delayedYearsToGoal
     );
@@ -647,7 +649,7 @@ export function calculateDelayCost(
     requiredInitialAmount = calculateRequiredInitialAmount(
       currentCapital,
       monthlyContribution,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       delayedYearsToGoal
     );
@@ -656,7 +658,7 @@ export function calculateDelayCost(
     requiredMonthlyContribution = calculateRequiredMonthlyContribution(
       currentCapital,
       strategy.initialAmount,
-      yearlyReturn,
+      netYearlyReturn,
       taxRate,
       delayedYearsToGoal
     );

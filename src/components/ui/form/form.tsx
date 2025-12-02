@@ -6,7 +6,7 @@ import {
   type AnyFormApi,
 } from "@tanstack/react-form";
 
-import { lazy } from "react";
+import { lazy, type RefObject, useEffect } from "react";
 
 const TextareaField = lazy(() => import("./fields/textarea-field"));
 const TextField = lazy(() => import("./fields/text-field"));
@@ -53,11 +53,13 @@ export type AppFieldNames = keyof typeof fieldComponents;
 type FormProps<Form extends AnyFormApi> = {
   children: React.ReactNode;
   form: Form;
+  formRef?: RefObject<HTMLFormElement | null>;
 } & Omit<React.ComponentProps<"form">, "onSubmit">;
 
 export const Form = <F extends AnyFormApi>({
   children,
   form: formApi,
+  formRef,
   ...props
 }: FormProps<F>) => {
   const AppForm = (
@@ -68,6 +70,7 @@ export const Form = <F extends AnyFormApi>({
 
   return (
     <form
+      ref={formRef}
       id={formApi.formId}
       onSubmit={(e) => {
         e.preventDefault();
