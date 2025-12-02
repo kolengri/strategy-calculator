@@ -99,7 +99,9 @@ export function Home() {
               <StrategyForm defaultValues={strategy} formRef={formRef} />
               <LifeEventsEditor
                 events={strategy.lifeEvents ?? []}
-                onChange={(events) => handleLifeEventsChange(strategy.id, events)}
+                onChange={(events) =>
+                  handleLifeEventsChange(strategy.id, events)
+                }
                 currentAge={strategy.currentAge}
                 goalAge={strategy.goalAge}
               />

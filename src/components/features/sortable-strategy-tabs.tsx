@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { XIcon, GripVertical } from "lucide-react";
 import type { Strategy } from "@/stores/strategy";
 import { isOnlyOneElement } from "@/utils/type-guards/is-only-one-element";
+import { cn } from "@/lib/utils";
 
 type SortableTabProps = {
   strategy: Strategy;
@@ -49,15 +50,19 @@ function SortableTab({ strategy, strategies, onRemove }: SortableTabProps) {
       ref={setNodeRef}
       style={style}
       value={strategy.id}
-      className="group relative cursor-grab active:cursor-grabbing"
+      className={cn("group relative cursor-grab active:cursor-grabbing", {
+        "cursor-default": isOnlyOneElement(strategies),
+      })}
     >
-      <span
-        {...attributes}
-        {...listeners}
-        className="opacity-0 group-hover:opacity-50 transition-opacity mr-0.5"
-      >
-        <GripVertical className="size-3" />
-      </span>
+      {!isOnlyOneElement(strategies) && (
+        <span
+          {...attributes}
+          {...listeners}
+          className="opacity-0 group-hover:opacity-50 transition-opacity mr-0.5"
+        >
+          <GripVertical className="size-3" />
+        </span>
+      )}
       <span className="text-sm">{strategy.name}</span>
       {!isOnlyOneElement(strategies) && (
         <Button
@@ -133,4 +138,3 @@ export function SortableStrategyTabs({
     </DndContext>
   );
 }
-
