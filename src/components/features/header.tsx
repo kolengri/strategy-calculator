@@ -1,5 +1,6 @@
 import logo from "@/assets/logo.svg";
 import { LanguageSelector } from "./language-selector";
+import { CurrencySelector } from "./currency-selector";
 import { useTranslation } from "react-i18next";
 
 export function Header() {
@@ -15,8 +16,9 @@ export function Header() {
           {t("components.features.header.title")}
         </h1>
       </div>
-      <div className="relative z-10">
-        <LanguageSelector className="ml-auto" />
+      <div className="relative z-10 flex items-center gap-2">
+        <CurrencySelector />
+        <LanguageSelector />
       </div>
     </header>
   );

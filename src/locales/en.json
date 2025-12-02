@@ -35,7 +35,7 @@
         }
       },
       "capital-growth-table": {
-        "title": "Capital Growth to Goal",
+        "title": "Capital Growth to Goal for {{name}}",
         "columns": {
           "year": "Year",
           "age": "Age",

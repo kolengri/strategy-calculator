@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
+import { useCurrencyStore } from "@/stores/currency";
+import { formatCurrency } from "@/utils/currencies";
 
 type CapitalGrowthTableProps = {
   strategy: Strategy;
@@ -18,6 +20,7 @@ type CapitalGrowthTableProps = {
 
 export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
   const { t } = useTranslation();
+  const { currency } = useCurrencyStore();
   const growthData = useMemo(
     () => calculateCapitalGrowth(strategy),
     [strategy]
@@ -27,15 +30,6 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
     return null;
   }
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("ru-RU", {
-      style: "currency",
-      currency: "RUB",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
-
   const formatPercentage = (value: number) => {
     return `${value.toFixed(1)}%`;
   };
@@ -44,7 +38,9 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
     <Card>
       <CardHeader>
         <CardTitle className="text-lg font-semibold">
-          {t("components.features.capital-growth-table.title")}
+          {t("components.features.capital-growth-table.title", {
+            name: strategy.name,
+          })}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -92,26 +88,28 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
                   <TableCell>{row.year}</TableCell>
                   <TableCell>{row.age}</TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(row.capitalStart)}
+                    {formatCurrency(row.capitalStart, currency)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(row.contributions)}
+                    {formatCurrency(row.contributions, currency)}
                   </TableCell>
                   <TableCell className="text-right text-green-600">
-                    +{formatCurrency(row.return)}
+                    +{formatCurrency(row.return, currency)}
                   </TableCell>
                   <TableCell className="text-right text-red-600">
-                    -{formatCurrency(row.tax)}
+                    -{formatCurrency(row.tax, currency)}
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    {formatCurrency(row.capitalEnd)}
+                    {formatCurrency(row.capitalEnd, currency)}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <div className="w-20 bg-muted rounded-full h-2">
                         <div
                           className="bg-primary h-2 rounded-full transition-all"
-                          style={{ width: `${Math.min(row.goalProgress, 100)}%` }}
+                          style={{
+                            width: `${Math.min(row.goalProgress, 100)}%`,
+                          }}
                         />
                       </div>
                       <span className="text-sm min-w-[50px]">
@@ -128,4 +126,3 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
     </Card>
   );
 };
-
