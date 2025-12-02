@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Hint } from "@/components/ui/hint";
 
 type WhatIfScenariosProps = {
   strategy: Strategy;
@@ -64,33 +65,59 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs">
-                  {t("components.features.what-if.table.scenario")}
+                  <Hint hint={t("components.features.what-if.table.scenarioHint")}>
+                    {t("components.features.what-if.table.scenario")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.what-if.table.finalCapital")}
+                  <Hint
+                    hint={t("components.features.what-if.table.finalCapitalHint")}
+                    className="justify-end"
+                  >
+                    {t("components.features.what-if.table.finalCapital")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.what-if.table.difference")}
+                  <Hint
+                    hint={t("components.features.what-if.table.differenceHint")}
+                    className="justify-end"
+                  >
+                    {t("components.features.what-if.table.difference")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t("components.features.what-if.table.percentChange")}
+                  <Hint
+                    hint={t("components.features.what-if.table.percentChangeHint")}
+                    className="justify-end"
+                  >
+                    {t("components.features.what-if.table.percentChange")}
+                  </Hint>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {scenarios.map((scenario) => {
                 const isPositive = scenario.difference >= 0;
+                const scenarioDescription = t(
+                  `components.features.what-if.scenarios.${scenario.id}`
+                );
                 return (
                   <TableRow key={scenario.id}>
-                    <TableCell className="font-medium text-sm flex items-center gap-1.5">
-                      {isPositive ? (
-                        <TrendingUp className="size-3.5 text-green-600" />
-                      ) : (
-                        <TrendingDown className="size-3.5 text-red-600" />
-                      )}
-                      {t("components.features.what-if.scenarioReturn", {
-                        modifier: scenario.name,
-                      })}
+                    <TableCell className="font-medium text-sm">
+                      <div className="flex items-center gap-1.5">
+                        {isPositive ? (
+                          <TrendingUp className="size-3.5 text-green-600 flex-shrink-0" />
+                        ) : (
+                          <TrendingDown className="size-3.5 text-red-600 flex-shrink-0" />
+                        )}
+                        <Hint hint={scenarioDescription} asChild>
+                          <span className="cursor-help border-b border-dashed border-muted-foreground/50">
+                            {t("components.features.what-if.scenarioReturn", {
+                              modifier: scenario.name,
+                            })}
+                          </span>
+                        </Hint>
+                      </div>
                     </TableCell>
                     <TableCell className="text-right text-sm">
                       {formatCurrency(scenario.finalCapital)}

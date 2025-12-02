@@ -3,13 +3,7 @@ import { cn } from "@/lib/utils";
 import { type AnyFieldApi } from "@tanstack/react-form";
 import { isEmptyArray } from "is-what";
 import { useEffect } from "react";
-import { HelpCircle } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Hint } from "@/components/ui/hint";
 
 type FieldWrapperProps = {
   children: React.ReactNode;
@@ -53,18 +47,7 @@ export const FieldWrapper = ({
     <Label htmlFor={id} className="text-xs font-light flex items-center gap-1">
       {label}
       {required && <span className="text-red-500">*</span>}
-      {hint && (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger type="button" tabIndex={-1} className="cursor-help">
-              <HelpCircle className="size-3 text-muted-foreground" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{hint}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      )}
+      {hint && <Hint hint={hint}>{null}</Hint>}
     </Label>
   );
 

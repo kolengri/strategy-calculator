@@ -94,14 +94,23 @@ export const StrategiesGrowthChart = () => {
 
     const series = strategies.flatMap((strategy, index) => {
       const color = getStrategyColor(strategy.id, index);
-      // Capital growth line
+
+      // Parse HSL color to get components for gradient
+      const hslMatch = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+      const hue = hslMatch ? hslMatch[1] : "200";
+      const saturation = hslMatch ? hslMatch[2] : "70";
+      const lightness = hslMatch ? hslMatch[3] : "50";
+
+      // Capital growth area with gradient fill
       const capitalSeries = {
-        type: "line" as const,
+        type: "area" as const,
         xKey: "age",
         yKey: strategy.name,
         yName: strategy.name,
         stroke: color,
         strokeWidth: 3,
+        fill: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+        fillOpacity: 0.15,
         marker: {
           enabled: false,
           size: 4,
@@ -118,7 +127,7 @@ export const StrategiesGrowthChart = () => {
           "components.features.strategies-growth-chart.contributions"
         )}`,
         stroke: color,
-        strokeWidth: 3,
+        strokeWidth: 2,
         lineDash: [8, 4], // Пунктирная линия для собственных вложений
         marker: {
           enabled: false,

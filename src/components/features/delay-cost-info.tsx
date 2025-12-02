@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateDelayDataList } from "@/utils/delay-cost";
-import { AlertCircle, HelpCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -14,12 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Hint } from "@/components/ui/hint";
 
 type DelayCostInfoProps = {
   strategy: Strategy;
@@ -78,154 +73,91 @@ export const DelayCostInfo = ({
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.delayYears"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.delayYearsHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.delayYearsHint"
+                    )}
+                  >
+                    {t("components.features.delay-cost-info.table.delayYears")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.ageAtStart"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.ageAtStartHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.ageAtStartHint"
+                    )}
+                    className="justify-end"
+                  >
+                    {t("components.features.delay-cost-info.table.ageAtStart")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.yearAtGoal"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.yearAtGoalHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.yearAtGoalHint"
+                    )}
+                    className="justify-end"
+                  >
+                    {t("components.features.delay-cost-info.table.yearAtGoal")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.delayedCapital"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.delayedCapitalHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.delayedCapitalHint"
+                    )}
+                    className="justify-end"
+                  >
+                    {t(
+                      "components.features.delay-cost-info.table.delayedCapital"
+                    )}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t("components.features.delay-cost-info.table.cost")}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.costHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.costHint"
+                    )}
+                    className="justify-end"
+                  >
+                    {t("components.features.delay-cost-info.table.cost")}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.costPercentage"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.costPercentageHint"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.costPercentageHint"
+                    )}
+                    className="justify-end"
+                  >
+                    {t(
+                      "components.features.delay-cost-info.table.costPercentage"
+                    )}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.requiredInitial"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.requiredInitialDescription"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.requiredInitialDescription"
+                    )}
+                    className="justify-end"
+                  >
+                    {t(
+                      "components.features.delay-cost-info.table.requiredInitial"
+                    )}
+                  </Hint>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-                        {t(
-                          "components.features.delay-cost-info.table.requiredMonthly"
-                        )}
-                        <HelpCircle className="size-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {t(
-                            "components.features.delay-cost-info.table.requiredMonthlyDescription"
-                          )}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Hint
+                    hint={t(
+                      "components.features.delay-cost-info.table.requiredMonthlyDescription"
+                    )}
+                    className="justify-end"
+                  >
+                    {t(
+                      "components.features.delay-cost-info.table.requiredMonthly"
+                    )}
+                  </Hint>
                 </TableHead>
               </TableRow>
             </TableHeader>

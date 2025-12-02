@@ -26,9 +26,21 @@
         "description": "See how different market returns would affect your final capital.",
         "table": {
           "scenario": "Scenario",
+          "scenarioHint": "Different return rate scenarios compared to your selected fund",
           "finalCapital": "Final Capital",
+          "finalCapitalHint": "The amount you would accumulate under this scenario",
           "difference": "Difference",
-          "percentChange": "% Change"
+          "differenceHint": "How much more or less you would have compared to the base scenario",
+          "percentChange": "% Change",
+          "percentChangeHint": "Percentage change compared to the base scenario"
+        },
+        "scenarios": {
+          "pessimistic-3": "Severe market downturn: what if your investments return 3% less annually than expected?",
+          "pessimistic-2": "Market underperformance: what if returns are 2% lower than the fund's historical average?",
+          "pessimistic-1": "Slight underperformance: a small 1% decrease in annual returns",
+          "optimistic-1": "Slight outperformance: a small 1% increase in annual returns",
+          "optimistic-2": "Market outperformance: what if returns are 2% higher than expected?",
+          "optimistic-3": "Strong bull market: what if your investments return 3% more annually?"
         }
       },
       "strategy-form": {

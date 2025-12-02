@@ -13,14 +13,8 @@ import {
   Calendar,
   BadgeDollarSign,
   TrendingDown,
-  HelpCircle,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Hint } from "@/components/ui/hint";
 
 type StrategySummaryProps = {
   strategy: Strategy;
@@ -62,16 +56,18 @@ function calculateSummary(strategy: Strategy): SummaryData | null {
   const yearsToGoal = growthData.length;
   const inflationRate = strategy.inflationRate / 100;
 
+  const lastRowCapitalEnd = lastRow?.capitalEnd ?? 0;
+
   // Calculate inflation-adjusted (real) capital - what the money will be worth in today's terms
   const inflationMultiplier = Math.pow(1 + inflationRate, yearsToGoal);
-  const inflationAdjustedCapital = lastRow.capitalEnd / inflationMultiplier;
+  const inflationAdjustedCapital = lastRowCapitalEnd / inflationMultiplier;
 
   // Calculate effective return after inflation
   const nominalReturn = fund.yearlyReturn * 100;
   const effectiveReturnAfterInflation = nominalReturn - strategy.inflationRate;
 
   return {
-    finalCapital: lastRow.capitalEnd,
+    finalCapital: lastRowCapitalEnd,
     totalContributions,
     totalReturns,
     totalTaxes,
@@ -103,7 +99,9 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
     },
     {
       label: t("components.features.strategy-form.summary.totalContributions"),
-      hint: t("components.features.strategy-form.summary.totalContributionsHint"),
+      hint: t(
+        "components.features.strategy-form.summary.totalContributionsHint"
+      ),
       value: formatCurrency(summary.totalContributions),
       icon: PiggyBank,
       color: "text-blue-600",
@@ -129,7 +127,9 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
       label: t(
         "components.features.strategy-form.summary.inflationAdjustedCapital"
       ),
-      hint: t("components.features.strategy-form.summary.inflationAdjustedCapitalHint"),
+      hint: t(
+        "components.features.strategy-form.summary.inflationAdjustedCapitalHint"
+      ),
       value: formatCurrency(summary.inflationAdjustedCapital),
       description: t(
         "components.features.strategy-form.summary.inflationAdjustedCapitalDescription",
@@ -158,7 +158,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xxl:grid-cols-6 gap-3">
           {items.map((item) => (
             <div
               key={item.label}
@@ -168,19 +168,11 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
                 <div className={`p-1.5 rounded-md ${item.bgColor}`}>
                   <item.icon className={`size-3.5 ${item.color}`} />
                 </div>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex items-center gap-1 cursor-help">
-                      <span className="text-xs text-muted-foreground truncate">
-                        {item.label}
-                      </span>
-                      <HelpCircle className="size-3 text-muted-foreground/50 flex-shrink-0" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{item.hint}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+                <Hint hint={item.hint}>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {item.label}
+                  </span>
+                </Hint>
               </div>
               <span className={`text-base font-bold ${item.color}`}>
                 {item.value}
@@ -197,33 +189,29 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         {/* Return rates */}
         <div className="mt-3 pt-3 border-t grid grid-cols-2 gap-3">
           <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="flex items-center gap-1 cursor-help text-xs text-muted-foreground">
-                  {t("components.features.strategy-form.summary.averageYearlyReturn")}
-                  <HelpCircle className="size-3 text-muted-foreground/50" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("components.features.strategy-form.summary.averageYearlyReturnHint")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Hint
+              hint={t(
+                "components.features.strategy-form.summary.averageYearlyReturnHint"
+              )}
+              className="text-xs text-muted-foreground"
+            >
+              {t(
+                "components.features.strategy-form.summary.averageYearlyReturn"
+              )}
+            </Hint>
             <span className="font-semibold text-sm text-green-600">
               {formatPercentage(summary.averageYearlyReturn)}
             </span>
           </div>
           <div className="flex justify-between items-center p-2 rounded-lg bg-muted/50">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="flex items-center gap-1 cursor-help text-xs text-muted-foreground">
-                  {t("components.features.strategy-form.summary.effectiveReturn")}
-                  <HelpCircle className="size-3 text-muted-foreground/50" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("components.features.strategy-form.summary.effectiveReturnHint")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Hint
+              hint={t(
+                "components.features.strategy-form.summary.effectiveReturnHint"
+              )}
+              className="text-xs text-muted-foreground"
+            >
+              {t("components.features.strategy-form.summary.effectiveReturn")}
+            </Hint>
             <span
               className={`font-semibold text-sm ${
                 summary.effectiveReturnAfterInflation >= 0

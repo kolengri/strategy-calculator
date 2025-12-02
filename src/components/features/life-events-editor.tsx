@@ -5,14 +5,9 @@ import type { LifeEvent } from "@/stores/strategy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form, useAppForm } from "@/components/ui/form";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Hint } from "@/components/ui/hint";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
-import { PlusIcon, Trash2Icon, HelpCircle, CalendarIcon } from "lucide-react";
+import { PlusIcon, Trash2Icon, CalendarIcon } from "lucide-react";
 
 type LifeEventsEditorProps = {
   events: LifeEvent[];
@@ -75,16 +70,10 @@ export const LifeEventsEditor = ({
         <CardTitle className="flex items-center justify-between text-base">
           <span className="flex items-center gap-2">
             {t("components.features.life-events.title")}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <HelpCircle className="size-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent className="max-w-[280px]">
-                  <p>{t("components.features.life-events.description")}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Hint
+              hint={t("components.features.life-events.description")}
+              iconClassName="size-4 text-muted-foreground"
+            />
           </span>
           {!isAdding && (
             <Button

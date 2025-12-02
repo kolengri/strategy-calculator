@@ -10,17 +10,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Hint } from "@/components/ui/hint";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 import { ExportCSVButton } from "./export-csv-button";
-import { CalendarIcon, HelpCircle } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 
 type TableColumn = {
   key: string;
@@ -33,22 +29,19 @@ const TableHeadWithHint = ({ column }: { column: TableColumn }) => {
   const alignClass = column.align === "right" ? "text-right" : "";
 
   if (!column.hint) {
-    return <TableHead className={`text-xs ${alignClass}`}>{column.label}</TableHead>;
+    return (
+      <TableHead className={`text-xs ${alignClass}`}>{column.label}</TableHead>
+    );
   }
 
   return (
     <TableHead className={`text-xs ${alignClass}`}>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
-            {column.label}
-            <HelpCircle className="size-3 text-muted-foreground" />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{column.hint}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Hint
+        hint={column.hint}
+        className={column.align === "right" ? "justify-end" : ""}
+      >
+        {column.label}
+      </Hint>
     </TableHead>
   );
 };
@@ -169,25 +162,23 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
                   </TableCell>
                   <TableCell className="text-right text-sm">
                     {row.withdrawal > 0 ? (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="text-amber-600 font-medium cursor-help inline-flex items-center gap-1">
-                              <CalendarIcon className="size-3" />-
-                              {formatCurrency(row.withdrawal)}
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <div className="text-xs">
-                              {row.lifeEvents.map((e) => (
-                                <div key={e.id}>
-                                  {e.name}: {formatCurrency(e.amount)}
-                                </div>
-                              ))}
-                            </div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="text-amber-600 font-medium cursor-help inline-flex items-center gap-1">
+                            <CalendarIcon className="size-3" />-
+                            {formatCurrency(row.withdrawal)}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="text-xs">
+                            {row.lifeEvents.map((e) => (
+                              <div key={e.id}>
+                                {e.name}: {formatCurrency(e.amount)}
+                              </div>
+                            ))}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
                     ) : (
                       <span className="text-muted-foreground">—</span>
                     )}

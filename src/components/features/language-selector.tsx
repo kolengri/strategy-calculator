@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import i18n, { type AvailableLocales, availableLocales } from "@/lib/i18n";
+import i18n, { type AvailableLocales, availableLocales, setLanguageCookie } from "@/lib/i18n";
 
 type LanguageSelectorProps = {
   className?: string;
@@ -16,6 +16,7 @@ type LanguageSelectorProps = {
 const handleChange = (value: string) => {
   const newLocale = value as AvailableLocales;
   i18n.changeLanguage(newLocale);
+  setLanguageCookie(newLocale);
 };
 
 export const LanguageSelector = ({ className }: LanguageSelectorProps) => {
