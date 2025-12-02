@@ -24,15 +24,15 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
 
   return (
     <Form form={form}>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Basic Information Section */}
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold">
               {t("components.features.strategy-form.sections.basic")}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <form.AppField name="name">
               {(field) => (
                 <field.TextField
@@ -106,12 +106,12 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
 
         {/* Financial Details Section */}
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-semibold">
               {t("components.features.strategy-form.sections.financial")}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <form.AppField name="initialAmount">
                 {(field) => (
@@ -191,8 +191,8 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end pt-2">
-          <form.SubmitButton>
+        <div className="flex justify-end pt-6">
+          <form.SubmitButton className="min-w-[140px] shadow-lg hover:shadow-xl">
             {t("components.features.strategy-form.submit-button.save")}
           </form.SubmitButton>
         </div>
