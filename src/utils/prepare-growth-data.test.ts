@@ -512,6 +512,7 @@ describe("prepareGrowthData", () => {
         inflationRate: 3,
         taxRate: 13,
         goal: 1000000,
+        goalAge: 65,
       },
     ];
 

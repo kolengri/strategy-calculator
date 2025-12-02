@@ -5,10 +5,10 @@ import { STRATEGY_TYPES, useStrategyStore } from "@/stores/strategy";
 import { useTranslation } from "react-i18next";
 import { useStore } from "@tanstack/react-form";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { FUNDS } from "@/db/funds";
-import { useCurrencyStore } from "@/stores/currency";
-import { formatCurrency } from "@/utils/currencies";
+import { FUNDS, getFundById } from "@/db/funds";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { calculateGoalBasedMonthlyContribution } from "@/utils/calculate-capital-growth";
+import { AGE_LIMITS } from "@/utils/constants";
 
 type StrategyFormProps = {
   defaultValues: Strategy;
@@ -17,22 +17,21 @@ type StrategyFormProps = {
 export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
   const { t } = useTranslation();
   const { updateStrategy } = useStrategyStore();
-  const { currency } = useCurrencyStore();
+  const formatCurrency = useFormatCurrency();
   const form = useAppForm({
     defaultValues,
     onSubmit: (values) => {
       const submittedStrategy = values.value;
 
       if (submittedStrategy.type === "goal-based") {
-        const selectedFund = FUNDS.find(
-          (fund) => fund.id === submittedStrategy.selectedFund
-        );
+        const selectedFund = getFundById(submittedStrategy.selectedFund);
 
         if (selectedFund) {
           const calculatedContribution = calculateGoalBasedMonthlyContribution(
             submittedStrategy.goal,
             submittedStrategy.initialAmount,
             submittedStrategy.currentAge,
+            submittedStrategy.goalAge,
             selectedFund.yearlyReturn,
             submittedStrategy.taxRate / 100,
             submittedStrategy.inflationRate
@@ -53,38 +52,37 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
   const formValues = useStore(form.store, (state) => state.values);
   const isGoalBased = formValues.type === "goal-based";
   const selectedFund = useMemo(
-    () => FUNDS.find((fund) => fund.id === formValues.selectedFund),
+    () => getFundById(formValues.selectedFund),
     [formValues.selectedFund]
   );
   const calculatedGoalContribution = useMemo(() => {
+    if (!isGoalBased || !selectedFund || formValues.type !== "goal-based") {
+      return 0;
+    }
+
+    const goal = formValues.goal;
+    const goalAge = formValues.goalAge;
     if (
-      !isGoalBased ||
-      !selectedFund ||
-      !formValues.goal ||
-      formValues.goal <= 0 ||
+      !goal ||
+      goal <= 0 ||
       !formValues.currentAge ||
-      formValues.currentAge <= 0
+      formValues.currentAge <= 0 ||
+      !goalAge ||
+      goalAge <= formValues.currentAge
     ) {
       return 0;
     }
 
     return calculateGoalBasedMonthlyContribution(
-      formValues.goal,
+      goal,
       formValues.initialAmount ?? 0,
       formValues.currentAge,
+      goalAge,
       selectedFund.yearlyReturn,
       (formValues.taxRate ?? 0) / 100,
       formValues.inflationRate ?? 0
     );
-  }, [
-    formValues.currentAge,
-    formValues.goal,
-    formValues.inflationRate,
-    formValues.initialAmount,
-    formValues.taxRate,
-    isGoalBased,
-    selectedFund,
-  ]);
+  }, [formValues, isGoalBased, selectedFund]);
   const hasGoalContribution = calculatedGoalContribution > 0;
 
   return (
@@ -128,42 +126,40 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                       "components.features.strategy-form.fields.currentAge"
                     )}
                     required
-                    min={0}
-                    max={120}
+                    min={AGE_LIMITS.MIN}
+                    max={AGE_LIMITS.MAX}
                   />
                 )}
               </form.AppField>
 
-              {!isGoalBased && (
-                <form.AppField name="goalAge">
-                  {(field) => (
-                    <field.NumberField
-                      label={t(
-                        "components.features.strategy-form.fields.goalAge"
-                      )}
-                      required
-                      min={0}
-                      max={120}
-                      placeholder="65"
-                    />
-                  )}
-                </form.AppField>
-              )}
-
-              {isGoalBased && (
-                <form.AppField name="goal">
-                  {(field) => (
-                    <field.NumberField
-                      label={t("components.features.strategy-form.fields.goal")}
-                      required
-                      min={0}
-                      step={1000}
-                      placeholder="0"
-                    />
-                  )}
-                </form.AppField>
-              )}
+              <form.AppField name="goalAge">
+                {(field) => (
+                  <field.NumberField
+                    label={t(
+                      "components.features.strategy-form.fields.goalAge"
+                    )}
+                    required
+                    min={AGE_LIMITS.MIN}
+                    max={AGE_LIMITS.MAX}
+                    placeholder="65"
+                  />
+                )}
+              </form.AppField>
             </div>
+
+            {isGoalBased && (
+              <form.AppField name="goal">
+                {(field) => (
+                  <field.NumberField
+                    label={t("components.features.strategy-form.fields.goal")}
+                    required
+                    min={0}
+                    step={1000}
+                    placeholder="0"
+                  />
+                )}
+              </form.AppField>
+            )}
 
             {isGoalBased && (
               <div className="rounded-lg border bg-muted/40 px-4 py-3">
@@ -174,7 +170,7 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                 </p>
                 <p className="text-2xl font-semibold">
                   {hasGoalContribution
-                    ? formatCurrency(calculatedGoalContribution, currency)
+                    ? formatCurrency(calculatedGoalContribution)
                     : t(
                         "components.features.strategy-form.goalBasedSummary.placeholder"
                       )}
@@ -237,9 +233,10 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                       "components.features.strategy-form.fields.selectedFund"
                     )}
                     options={FUNDS.map((fund) => ({
-                      label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(
-                        1
-                      )}% годовых)`,
+                      label: `${fund.name} (${t(
+                        "components.features.strategy-form.fundYearlyReturn",
+                        { return: (fund.yearlyReturn * 100).toFixed(1) }
+                      )})`,
                       value: fund.id,
                     }))}
                     required

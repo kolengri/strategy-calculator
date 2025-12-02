@@ -124,6 +124,7 @@ describe("calculateGoalProgress", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 65,
     };
 
     const progress = calculateGoalProgress(strategy, 0, 20, 500000, 1000000);
@@ -190,6 +191,7 @@ describe("calculateTargetAmount", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 65,
     };
 
     const { targetAmount, yearsToGoal } = calculateTargetAmount(
@@ -198,8 +200,8 @@ describe("calculateTargetAmount", () => {
       0.13
     );
 
-    expect(yearsToGoal).toBeGreaterThan(0);
-    expect(targetAmount).toBeGreaterThan(strategy.goal); // Adjusted for inflation
+    expect(yearsToGoal).toBe(40); // 65 - 25
+    expect(targetAmount).toBe(strategy.goal); // Exact goal amount, no inflation adjustment
   });
 });
 
@@ -207,9 +209,10 @@ describe("calculateGoalBasedMonthlyContribution", () => {
   test("should return positive contribution for valid inputs", () => {
     const fund = FUNDS[0];
     const contribution = calculateGoalBasedMonthlyContribution(
-      1000000,
-      100000,
-      30,
+      1000000, // goal
+      100000, // initialAmount
+      30, // currentAge
+      65, // goalAge
       fund.yearlyReturn,
       0.13,
       3
@@ -221,9 +224,10 @@ describe("calculateGoalBasedMonthlyContribution", () => {
   test("should return 0 when goal already met", () => {
     const fund = FUNDS[0];
     const contribution = calculateGoalBasedMonthlyContribution(
-      100000,
-      1000000,
-      30,
+      100000, // goal
+      1000000, // initialAmount (already exceeds goal)
+      30, // currentAge
+      65, // goalAge
       fund.yearlyReturn,
       0.13,
       3
@@ -234,7 +238,7 @@ describe("calculateGoalBasedMonthlyContribution", () => {
 });
 
 describe("getEffectiveMaxYears", () => {
-  test("should return maxYears for goal-based strategy", () => {
+  test("should limit maxYears for goal-based strategy based on goalAge", () => {
     const strategy: GoalBasedStrategy = {
       id: "1",
       name: "Test",
@@ -247,10 +251,11 @@ describe("getEffectiveMaxYears", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 65,
     };
 
     const effectiveMaxYears = getEffectiveMaxYears(strategy, 50);
-    expect(effectiveMaxYears).toBe(50);
+    expect(effectiveMaxYears).toBe(41); // 65 - 25 + 1
   });
 
   test("should limit maxYears for age-based strategy", () => {
@@ -325,6 +330,7 @@ describe("shouldStopCalculation", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 65,
     };
 
     expect(shouldStopCalculation(strategy, 50, 1000000, 1000000)).toBe(true);
@@ -455,21 +461,24 @@ describe("calculateCapitalGrowth", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 65,
     };
 
-    const result = calculateCapitalGrowth(strategy, 10);
+    const result = calculateCapitalGrowth(strategy, 50);
     const fund = FUNDS.find((f) => f.id === strategy.selectedFund)!;
     const expectedContribution = calculateGoalBasedMonthlyContribution(
       strategy.goal,
       strategy.initialAmount,
       strategy.currentAge,
+      strategy.goalAge,
       fund.yearlyReturn,
       strategy.taxRate / 100,
       strategy.inflationRate
     );
 
     expect(result.length).toBeGreaterThan(0);
-    expect(result.length).toBeLessThanOrEqual(10);
+    expect(result.length).toBeGreaterThan(0);
+    expect(result.length).toBeLessThanOrEqual(41); // 65 - 25 + 1
     expect(result[0].capitalStart).toBe(100000);
     expect(result[0].contributions).toBe(
       Math.round(expectedContribution * 12)
@@ -511,14 +520,15 @@ describe("calculateCapitalGrowth", () => {
       inflationRate: 3,
       taxRate: 13,
       goal: 1000000,
+      goalAge: 30, // Short goal to reach quickly
     };
 
     const result = calculateCapitalGrowth(strategy, 50);
+    expect(result.length).toBeGreaterThan(0);
     const lastRow = result[result.length - 1];
 
-    expect(lastRow.capitalEnd).toBeGreaterThanOrEqual(
-      strategy.goal * Math.pow(1 + strategy.inflationRate / 100, result.length)
-    );
+    // Should stop at goalAge or when goal reached
+    expect(lastRow.age).toBeLessThanOrEqual(30);
   });
 
   test("should have increasing capital over time", () => {

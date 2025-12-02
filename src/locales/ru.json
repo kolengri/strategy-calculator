@@ -28,6 +28,7 @@
           "inflationRate": "Уровень инфляции (%)",
           "taxRate": "Налоговая ставка (%)"
         },
+        "fundYearlyReturn": "{{return}}% годовых",
         "sections": {
           "basic": "Основная информация",
           "financial": "Финансовые детали",
@@ -35,8 +36,20 @@
         },
         "goalBasedSummary": {
           "title": "Необходимый ежемесячный взнос",
-          "description": "Рассчитанная сумма, которую нужно инвестировать каждый месяц с учетом выбранного фонда и параметров.",
+          "description": "Рассчитанная сумма для достижения цели к указанному возрасту с учетом выбранного фонда.",
           "placeholder": "Заполните поля цели, возраста и финансов, чтобы увидеть расчет"
+        },
+        "summary": {
+          "title": "Итоговая сводка",
+          "finalCapital": "Итоговый капитал",
+          "totalContributions": "Всего вложено",
+          "totalReturns": "Доход от инвестиций",
+          "totalTaxes": "Всего налогов",
+          "inflationAdjustedCapital": "Покупательная способность",
+          "inflationAdjustedCapitalDescription": "В сегодняшних ценах с учетом инфляции {{rate}}%",
+          "yearsToGoal": "Лет до цели",
+          "averageYearlyReturn": "Средняя годовая доходность",
+          "effectiveReturn": "Реальная доходность после инфляции"
         }
       },
       "capital-growth-table": {

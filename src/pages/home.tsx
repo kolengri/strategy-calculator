@@ -9,6 +9,7 @@ import { StrategyForm } from "@/components/features/strategy-form";
 import { CapitalGrowthTable } from "@/components/features/capital-growth-table";
 import { StrategiesGrowthChart } from "@/components/features/strategies-growth-chart";
 import { DelayCostInfo } from "@/components/features/delay-cost-info";
+import { StrategySummary } from "@/components/features/strategy-summary";
 import { useEffect, useState } from "react";
 
 export function Home() {
@@ -88,6 +89,7 @@ export function Home() {
                 </h2>
               </div>
               <StrategyForm defaultValues={strategy} />
+              <StrategySummary strategy={strategy} />
               <DelayCostInfo strategy={strategy} />
               <CapitalGrowthTable strategy={strategy} />
             </div>

@@ -30,9 +30,36 @@ export type AgeBasedStrategy = StrategyBase & {
 export type GoalBasedStrategy = StrategyBase & {
   type: (typeof STRATEGY_TYPES)[1];
   goal: number;
+  goalAge: number;
 };
 
 export type Strategy = AgeBasedStrategy | GoalBasedStrategy;
+
+/**
+ * Default values for a new age-based strategy
+ */
+const DEFAULT_STRATEGY_VALUES = {
+  type: "age-based" as const,
+  currentAge: 25,
+  inflationRate: 3,
+  initialAmount: 100000,
+  monthlyContribution: 500,
+  selectedFund: FUNDS[0].id,
+  goalAge: 65,
+  taxRate: 13,
+};
+
+/**
+ * Creates a new strategy with default values
+ */
+function createStrategy(name: string): AgeBasedStrategy {
+  return {
+    id: uuidv4(),
+    name,
+    createdAt: new Date(),
+    ...DEFAULT_STRATEGY_VALUES,
+  };
+}
 
 type StrategyStore = {
   strategies: Strategy[];
@@ -46,45 +73,19 @@ type StrategyStore = {
 export const useStrategyStore = create<StrategyStore>()(
   persist(
     (set) => ({
-      strategies: [
-        {
-          id: uuidv4(),
-          name: i18n.t("home.defaultStrategyName"),
-          createdAt: new Date(),
-          type: "age-based",
-          currentAge: 25,
-          inflationRate: 3,
-          initialAmount: 100000,
-          monthlyContribution: 500,
-          selectedFund: FUNDS[0].id,
-          goalAge: 65,
-          taxRate: 13,
-        },
-      ],
+      strategies: [createStrategy(i18n.t("home.defaultStrategyName"))],
       newBlankStrategy: () =>
-        set((state) => {
-          return {
-            strategies: [
-              ...state.strategies,
-              {
-                id: uuidv4(),
-                name: findNextName(
-                  state.strategies.map((s) => s.name),
-                  i18n.t("home.newStrategy")
-                ),
-                createdAt: new Date(),
-                type: "age-based",
-                currentAge: 25,
-                inflationRate: 3,
-                initialAmount: 100000,
-                monthlyContribution: 500,
-                selectedFund: FUNDS[0].id,
-                goalAge: 65,
-                taxRate: 13,
-              },
-            ],
-          };
-        }),
+        set((state) => ({
+          strategies: [
+            ...state.strategies,
+            createStrategy(
+              findNextName(
+                state.strategies.map((s) => s.name),
+                i18n.t("home.newStrategy")
+              )
+            ),
+          ],
+        })),
       addStrategy: (strategy: Strategy) =>
         set((state) => ({ strategies: [...state.strategies, strategy] })),
       removeStrategy: (id: string) =>

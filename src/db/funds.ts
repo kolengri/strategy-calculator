@@ -1,3 +1,17 @@
+export type Fund = {
+  id: string;
+  name: string;
+  description: string;
+  yearlyReturn: number;
+};
+
+/**
+ * Get a fund by its ID
+ */
+export function getFundById(id: string): Fund | undefined {
+  return FUNDS.find((f) => f.id === id);
+}
+
 export const FUNDS = [
   {
     id: "SPX",

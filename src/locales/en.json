@@ -28,6 +28,7 @@
           "inflationRate": "Inflation Rate (%)",
           "taxRate": "Tax Rate (%)"
         },
+        "fundYearlyReturn": "{{return}}% yearly",
         "sections": {
           "basic": "Basic Information",
           "financial": "Financial Details",
@@ -35,8 +36,20 @@
         },
         "goalBasedSummary": {
           "title": "Required Monthly Contribution",
-          "description": "Calculated monthly amount needed to reach your goal with the selected fund and taxes.",
+          "description": "Calculated monthly amount needed to reach your goal by the target age with selected fund.",
           "placeholder": "Fill in goal, age, and financial fields to calculate"
+        },
+        "summary": {
+          "title": "Final Summary",
+          "finalCapital": "Final Capital",
+          "totalContributions": "Total Contributions",
+          "totalReturns": "Investment Returns",
+          "totalTaxes": "Total Taxes",
+          "inflationAdjustedCapital": "Purchasing Power",
+          "inflationAdjustedCapitalDescription": "In today's prices adjusted for {{rate}}% inflation",
+          "yearsToGoal": "Years to Goal",
+          "averageYearlyReturn": "Average Yearly Return",
+          "effectiveReturn": "Effective Return after Inflation"
         }
       },
       "capital-growth-table": {

@@ -10,8 +10,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCurrencyStore } from "@/stores/currency";
-import { formatCurrency } from "@/utils/currencies";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
+import { formatPercentage } from "@/utils/format";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 
 type CapitalGrowthTableProps = {
@@ -20,7 +20,7 @@ type CapitalGrowthTableProps = {
 
 export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
   const { t } = useTranslation();
-  const { currency } = useCurrencyStore();
+  const formatCurrency = useFormatCurrency();
   const growthData = useMemo(
     () => calculateCapitalGrowth(strategy),
     [strategy]
@@ -29,10 +29,6 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
   if (growthData.length === 0) {
     return null;
   }
-
-  const formatPercentage = (value: number) => {
-    return `${value.toFixed(1)}%`;
-  };
 
   return (
     <Card>
@@ -88,19 +84,19 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
                   <TableCell>{row.year}</TableCell>
                   <TableCell>{row.age}</TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(row.capitalStart, currency)}
+                    {formatCurrency(row.capitalStart)}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(row.contributions, currency)}
+                    {formatCurrency(row.contributions)}
                   </TableCell>
                   <TableCell className="text-right text-green-600">
-                    +{formatCurrency(row.return, currency)}
+                    +{formatCurrency(row.return)}
                   </TableCell>
                   <TableCell className="text-right text-red-600">
-                    -{formatCurrency(row.tax, currency)}
+                    -{formatCurrency(row.tax)}
                   </TableCell>
                   <TableCell className="text-right font-semibold">
-                    {formatCurrency(row.capitalEnd, currency)}
+                    {formatCurrency(row.capitalEnd)}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">

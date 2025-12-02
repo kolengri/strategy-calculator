@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { Strategy } from "@/stores/strategy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCurrencyStore } from "@/stores/currency";
-import { formatCurrency } from "@/utils/currencies";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
+import { formatPercentage } from "@/utils/format";
 import { calculateDelayCost } from "@/utils/calculate-capital-growth";
 import { AlertCircle } from "lucide-react";
 import {
@@ -27,7 +27,7 @@ export const DelayCostInfo = ({
   maxDelayYears,
 }: DelayCostInfoProps) => {
   const { t } = useTranslation();
-  const { currency } = useCurrencyStore();
+  const formatCurrency = useFormatCurrency();
 
   // Determine max delay years based on strategy type
   const effectiveMaxDelayYears = useMemo(() => {
@@ -94,7 +94,7 @@ export const DelayCostInfo = ({
               {t("components.features.delay-cost-info.currentCapital")}
             </span>
             <span className="font-semibold text-lg">
-              {formatCurrency(currentCapital, currency)}
+              {formatCurrency(currentCapital)}
             </span>
           </div>
           <div className="flex items-center justify-between p-3 bg-background rounded-lg border">
@@ -160,25 +160,22 @@ export const DelayCostInfo = ({
                     {data.delayedYearAtGoal}
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(data.delayedCapital, currency)}
+                    {formatCurrency(data.delayedCapital)}
                   </TableCell>
                   <TableCell className="text-right font-semibold text-orange-700 dark:text-orange-300">
-                    -{formatCurrency(data.cost, currency)}
+                    -{formatCurrency(data.cost)}
                   </TableCell>
                   <TableCell className="text-right text-orange-600 dark:text-orange-400">
-                    -{data.costPercentage.toFixed(1)}%
+                    -{formatPercentage(data.costPercentage)}
                   </TableCell>
                   <TableCell className="text-right text-blue-700 dark:text-blue-300">
                     {data.requiredInitialAmount !== null
-                      ? formatCurrency(data.requiredInitialAmount, currency)
+                      ? formatCurrency(data.requiredInitialAmount)
                       : "-"}
                   </TableCell>
                   <TableCell className="text-right text-blue-700 dark:text-blue-300">
                     {data.requiredMonthlyContribution !== null
-                      ? formatCurrency(
-                          data.requiredMonthlyContribution,
-                          currency
-                        )
+                      ? formatCurrency(data.requiredMonthlyContribution)
                       : "-"}
                   </TableCell>
                 </TableRow>

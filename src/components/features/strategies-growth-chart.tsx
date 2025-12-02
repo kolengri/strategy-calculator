@@ -3,8 +3,7 @@ import { useTranslation } from "react-i18next";
 import { AgCharts } from "ag-charts-react";
 import type { AgChartOptions } from "ag-charts-community";
 import { useStrategyStore } from "@/stores/strategy";
-import { useCurrencyStore } from "@/stores/currency";
-import { formatCurrency } from "@/utils/currencies";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   prepareGrowthData,
@@ -30,7 +29,7 @@ function getStrategyColor(strategyId: string, index: number): string {
 export const StrategiesGrowthChart = () => {
   const { t } = useTranslation();
   const { strategies } = useStrategyStore();
-  const { currency } = useCurrencyStore();
+  const formatCurrency = useFormatCurrency();
 
   const chartData = useMemo(() => {
     const data = prepareGrowthData(strategies);
@@ -145,7 +144,7 @@ export const StrategiesGrowthChart = () => {
           max: maxValue + padding,
           label: {
             formatter: (params: { value: number }) => {
-              return formatCurrency(params.value, currency);
+              return formatCurrency(params.value);
             },
           },
         },
@@ -209,14 +208,11 @@ export const StrategiesGrowthChart = () => {
               content += `<div style="margin-left: 8px; font-size: 13px;">`;
               content += `<div>${t(
                 "components.features.strategies-growth-chart.capital"
-              )}: <strong>${formatCurrency(capital, currency)}</strong></div>`;
+              )}: <strong>${formatCurrency(capital)}</strong></div>`;
               if (contributions !== undefined && !isNaN(contributions)) {
                 content += `<div style="margin-top: 2px;">${t(
                   "components.features.strategies-growth-chart.contributions"
-                )}: <strong>${formatCurrency(
-                  contributions,
-                  currency
-                )}</strong></div>`;
+                )}: <strong>${formatCurrency(contributions)}</strong></div>`;
               }
               content += `</div>`;
               content += `</div>`;
@@ -228,7 +224,7 @@ export const StrategiesGrowthChart = () => {
         },
       },
     };
-  }, [chartData, strategies, currency, t]);
+  }, [chartData, strategies, formatCurrency, t]);
 
   if (strategies.length === 0) {
     return null;

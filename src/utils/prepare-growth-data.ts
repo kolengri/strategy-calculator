@@ -29,6 +29,18 @@ export function calculateCumulativeContributions(
 }
 
 /**
+ * Calculates cumulative contributions up to a given age for a strategy
+ */
+export function calculateCumulativeContributionsByAge(
+  data: CapitalGrowthRow[],
+  age: number
+): number {
+  return data
+    .filter((r) => r.age <= age)
+    .reduce((sum, r) => sum + r.contributions, 0);
+}
+
+/**
  * Gets the last available row for a strategy up to a given year
  */
 export function getLastRowUpToYear(
@@ -72,16 +84,8 @@ export function processStrategyForAge(
   if (row) {
     // Use the exact data for this age
     ageData[strategy.name] = row.capitalEnd;
-
-    // Calculate cumulative contributions up to this age for this strategy only
-    // Find all rows up to this age
-    const rowsUpToAge = data.filter((r) => r.age <= age);
-    const cumulativeContributions = rowsUpToAge.reduce(
-      (sum, r) => sum + r.contributions,
-      0
-    );
-    ageData[`${strategy.name}_contributions`] = cumulativeContributions;
-
+    ageData[`${strategy.name}_contributions`] =
+      calculateCumulativeContributionsByAge(data, age);
     years.push(row.year);
   } else {
     // If no data for this age, use the last available value for this strategy
@@ -91,15 +95,8 @@ export function processStrategyForAge(
 
     if (lastRow) {
       ageData[strategy.name] = lastRow.capitalEnd;
-
-      // Calculate cumulative contributions up to this age for this strategy only
-      const rowsUpToAge = data.filter((r) => r.age <= age);
-      const cumulativeContributions = rowsUpToAge.reduce(
-        (sum, r) => sum + r.contributions,
-        0
-      );
-      ageData[`${strategy.name}_contributions`] = cumulativeContributions;
-
+      ageData[`${strategy.name}_contributions`] =
+        calculateCumulativeContributionsByAge(data, age);
       years.push(lastRow.year);
     }
   }

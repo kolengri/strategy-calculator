@@ -1,5 +1,7 @@
 import type { Strategy } from "@/stores/strategy";
-import { FUNDS } from "@/db/funds";
+import { getFundById, type Fund } from "@/db/funds";
+import { AGE_LIMITS, CALCULATION_LIMITS } from "./constants";
+import { getCurrentYear } from "./format";
 
 export type CapitalGrowthRow = {
   year: number;
@@ -24,6 +26,35 @@ export type YearCapitalResult = {
  */
 export function calculateMonthlyReturn(yearlyReturn: number): number {
   return Math.pow(1 + yearlyReturn, 1 / 12) - 1;
+}
+
+/**
+ * Financial parameters derived from a strategy
+ */
+export type StrategyFinancialParams = {
+  fund: Fund;
+  yearlyReturn: number;
+  taxRate: number;
+  monthlyReturn: number;
+};
+
+/**
+ * Gets financial parameters from a strategy
+ * @returns null if fund is not found
+ */
+export function getStrategyFinancialParams(
+  strategy: Strategy
+): StrategyFinancialParams | null {
+  const fund = getFundById(strategy.selectedFund);
+  if (!fund) return null;
+
+  const yearlyReturn = fund.yearlyReturn;
+  return {
+    fund,
+    yearlyReturn,
+    taxRate: strategy.taxRate / 100,
+    monthlyReturn: calculateMonthlyReturn(yearlyReturn),
+  };
 }
 
 /**
@@ -94,8 +125,10 @@ export function calculateTargetAmount(
   yearlyReturn: number,
   taxRate: number
 ): { targetAmount: number; yearsToGoal: number } {
+  // Both strategy types now have goalAge
+  const yearsToGoal = strategy.goalAge - strategy.currentAge;
+
   if (strategy.type === "age-based") {
-    const yearsToGoal = strategy.goalAge - strategy.currentAge;
     // For age-based, calculate projected capital at goal age for progress tracking
     // This gives us a target to measure progress against
     const targetAmount = calculateProjectedCapital(
@@ -107,21 +140,9 @@ export function calculateTargetAmount(
     );
     return { targetAmount, yearsToGoal };
   } else {
-    // For goal-based, adjust goal for inflation
-    const yearsToGoal = estimateYearsToGoal(
-      strategy.initialAmount,
-      strategy.monthlyContribution,
-      yearlyReturn,
-      taxRate,
-      strategy.goal
-    );
-    // Adjust goal for inflation over the years
-    const inflationMultiplier = Math.pow(
-      1 + strategy.inflationRate / 100,
-      yearsToGoal
-    );
-    const targetAmount = strategy.goal * inflationMultiplier;
-    return { targetAmount, yearsToGoal };
+    // For goal-based, target is the nominal goal amount (what user wants to have)
+    // No inflation adjustment here - user specified the exact target amount
+    return { targetAmount: strategy.goal, yearsToGoal };
   }
 }
 
@@ -132,11 +153,9 @@ export function getEffectiveMaxYears(
   strategy: Strategy,
   maxYears: number
 ): number {
-  if (strategy.type === "age-based") {
-    const yearsToGoalAge = strategy.goalAge - strategy.currentAge;
-    return Math.min(maxYears, yearsToGoalAge + 1); // +1 to include goalAge year
-  }
-  return maxYears;
+  // Both strategy types now have goalAge
+  const yearsToGoalAge = strategy.goalAge - strategy.currentAge;
+  return Math.min(maxYears, yearsToGoalAge + 1); // +1 to include goalAge year
 }
 
 /**
@@ -148,9 +167,11 @@ export function shouldStopCalculation(
   capitalEnd: number,
   targetAmount: number
 ): boolean {
-  if (strategy.type === "age-based" && age >= strategy.goalAge) {
+  // Both strategy types stop at goalAge
+  if (age >= strategy.goalAge) {
     return true;
   }
+  // Goal-based also stops when goal amount is reached
   if (strategy.type === "goal-based" && capitalEnd >= targetAmount) {
     return true;
   }
@@ -167,6 +188,7 @@ function getStrategyMonthlyContribution(
       strategy.goal,
       strategy.initialAmount,
       strategy.currentAge,
+      strategy.goalAge,
       yearlyReturn,
       taxRate,
       strategy.inflationRate
@@ -178,16 +200,14 @@ function getStrategyMonthlyContribution(
 
 export function calculateCapitalGrowth(
   strategy: Strategy,
-  maxYears: number = 50
+  maxYears: number = AGE_LIMITS.MAX_INVESTMENT_YEARS
 ): CapitalGrowthRow[] {
-  const fund = FUNDS.find((f) => f.id === strategy.selectedFund);
-  if (!fund) {
+  const params = getStrategyFinancialParams(strategy);
+  if (!params) {
     return [];
   }
 
-  const yearlyReturn = fund.yearlyReturn;
-  const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
-  const taxRate = strategy.taxRate / 100;
+  const { yearlyReturn, monthlyReturn, taxRate } = params;
   const monthlyContribution = getStrategyMonthlyContribution(
     strategy,
     yearlyReturn,
@@ -207,7 +227,7 @@ export function calculateCapitalGrowth(
 
   const rows: CapitalGrowthRow[] = [];
   let currentCapital = strategy.initialAmount;
-  const currentYear = new Date().getFullYear();
+  const currentYear = getCurrentYear();
 
   // For age-based strategies, limit maxYears to not exceed goalAge
   const effectiveMaxYears = getEffectiveMaxYears(strategy, maxYears);
@@ -298,7 +318,7 @@ export function estimateYearsToGoal(
   let capital = initial;
   const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
 
-  while (capital < goal && years < 100) {
+  while (capital < goal && years < CALCULATION_LIMITS.MAX_YEARS_TO_GOAL) {
     const yearResult = calculateYearCapital(
       capital,
       monthlyContribution,
@@ -382,10 +402,12 @@ export function calculateRequiredMonthlyContribution(
   );
   let result = 0;
   const tolerance = 0.01; // 1 cent precision
-  const maxIterations = 100; // Safety limit
   let iterations = 0;
 
-  while (high - low > tolerance && iterations < maxIterations) {
+  while (
+    high - low > tolerance &&
+    iterations < CALCULATION_LIMITS.MAX_ITERATIONS
+  ) {
     iterations++;
     const mid = (low + high) / 2;
     const projected = calculateProjectedCapital(
@@ -413,81 +435,44 @@ export function calculateRequiredMonthlyContribution(
 
 /**
  * Calculates required monthly contribution for goal-based strategy
- * Calculates how much needs to be invested monthly to reach the goal
- * Uses reasonable time frame (up to age 65 or 50 years maximum)
+ * Calculates how much needs to be invested monthly to reach the goal by goalAge
  */
 export function calculateGoalBasedMonthlyContribution(
   goal: number,
   initialAmount: number,
   currentAge: number,
+  goalAge: number,
   yearlyReturn: number,
   taxRate: number,
-  inflationRate: number
+  _inflationRate: number // kept for API compatibility, but not used
 ): number {
   // Validate inputs
-  if (goal <= 0 || currentAge <= 0 || currentAge >= 120) {
+  if (goal <= 0 || currentAge <= 0 || currentAge >= AGE_LIMITS.MAX) {
     return 0;
   }
 
-  // Use reasonable time frame: up to age 65 or 50 years, whichever is smaller
-  const maxAge = 65;
-  const maxYears = Math.min(maxAge - currentAge, 50);
+  // Calculate years to goal based on goalAge
+  const yearsToGoal = goalAge - currentAge;
 
-  if (maxYears <= 0) {
+  if (yearsToGoal <= 0) {
     return 0;
   }
 
-  // Adjust goal for inflation over the investment period
-  // We'll use an iterative approach to find the right contribution
-  let estimatedYears = maxYears;
-  let monthlyContribution = 0;
-  const maxIterations = 10;
-  let iterations = 0;
-
-  while (iterations < maxIterations) {
-    // Adjust goal for inflation over estimated years
-    const inflationMultiplier = Math.pow(
-      1 + inflationRate / 100,
-      estimatedYears
-    );
-    const adjustedGoal = goal * inflationMultiplier;
-
-    // If initial amount already exceeds adjusted goal, return 0
-    if (initialAmount >= adjustedGoal) {
-      return 0;
-    }
-
-    // Calculate required monthly contribution for adjusted goal
-    monthlyContribution = calculateRequiredMonthlyContribution(
-      adjustedGoal,
-      initialAmount,
-      yearlyReturn,
-      taxRate,
-      estimatedYears
-    );
-
-    // If contribution is 0 or negative, something went wrong
-    if (monthlyContribution <= 0) {
-      break;
-    }
-
-    // Estimate actual years needed with this contribution
-    const actualYears = estimateYearsToGoal(
-      initialAmount,
-      monthlyContribution,
-      yearlyReturn,
-      taxRate,
-      adjustedGoal
-    );
-
-    // If years are close enough, we're done
-    if (Math.abs(actualYears - estimatedYears) < 1 || actualYears >= maxYears) {
-      break;
-    }
-
-    estimatedYears = Math.min(actualYears, maxYears);
-    iterations++;
+  // If initial amount already exceeds goal, return 0
+  if (initialAmount >= goal) {
+    return 0;
   }
+
+  // Calculate required monthly contribution to reach the nominal goal
+  // Inflation is NOT applied here - user specifies the exact target amount
+  // Inflation impact is shown separately in the summary as "purchasing power"
+  const monthlyContribution = calculateRequiredMonthlyContribution(
+    goal,
+    initialAmount,
+    yearlyReturn,
+    taxRate,
+    yearsToGoal
+  );
 
   return Math.max(0, monthlyContribution);
 }
@@ -498,10 +483,7 @@ export function calculateGoalBasedMonthlyContribution(
  * @param delayYears - Number of years to delay (default: 3)
  * @returns Object with delay cost information
  */
-export function calculateDelayCost(
-  strategy: Strategy,
-  delayYears: number = 3
-): {
+export type DelayCostResult = {
   currentCapital: number;
   delayedCapital: number;
   cost: number;
@@ -513,11 +495,16 @@ export function calculateDelayCost(
   delayedYearAtGoal: number;
   requiredInitialAmount: number | null;
   requiredMonthlyContribution: number | null;
-} {
-  const fund = FUNDS.find((f) => f.id === strategy.selectedFund);
-  const currentYear = new Date().getFullYear();
+};
 
-  if (!fund) {
+export function calculateDelayCost(
+  strategy: Strategy,
+  delayYears: number = 3
+): DelayCostResult {
+  const params = getStrategyFinancialParams(strategy);
+  const currentYear = getCurrentYear();
+
+  if (!params) {
     return {
       currentCapital: 0,
       delayedCapital: 0,
@@ -533,8 +520,7 @@ export function calculateDelayCost(
     };
   }
 
-  const yearlyReturn = fund.yearlyReturn;
-  const taxRate = strategy.taxRate / 100;
+  const { yearlyReturn, taxRate } = params;
   const monthlyContribution = getStrategyMonthlyContribution(
     strategy,
     yearlyReturn,
