@@ -346,27 +346,25 @@ export function calculateDelayCost(
     currentAgeAtGoal = strategy.goalAge;
 
     // Delayed strategy: start delayYears later
-    // Calculate what the initial amount would be after delayYears without contributions
-    // (just the initial amount growing, but we assume no contributions during delay)
-    const delayedInitialAmount = calculateProjectedCapital(
-      strategy.initialAmount,
-      0, // No contributions during delay
-      yearlyReturn,
-      taxRate,
-      delayYears
-    );
+    // When person delays, they don't make contributions during delay period
+    // Initial capital remains the same (or grows minimally if already invested)
+    // The key loss is the missed contributions during delay years
+
+    // For delayed scenario: initial amount stays the same (or minimal growth)
+    // We assume initial capital is not actively invested during delay
+    const delayedInitialAmount = strategy.initialAmount;
 
     delayedYearsToGoal = currentYearsToGoal - delayYears;
 
     // If delayYears >= currentYearsToGoal, there's no time left to reach goalAge
-    // Calculate capital at the age when they would start (currentAge + delayYears)
-    // and then project to goalAge, but this will be less than currentCapital
     if (delayedYearsToGoal <= 0) {
-      // Person starts investing at or after goalAge, so capital is just the delayed initial amount
-      // projected to goalAge (which is the same as delayedInitialAmount if delayedYearsToGoal = 0)
+      // Person starts investing at or after goalAge
+      // Capital is just the initial amount (no time for contributions)
       delayedCapital = delayedInitialAmount;
       delayedAgeAtGoal = strategy.currentAge + delayYears; // They start at this age
     } else {
+      // Calculate capital if they start delayYears later with same initial amount
+      // but only have remaining years to contribute
       delayedCapital = calculateProjectedCapital(
         delayedInitialAmount,
         strategy.monthlyContribution,
@@ -397,14 +395,9 @@ export function calculateDelayCost(
     );
     currentAgeAtGoal = strategy.currentAge + currentYearsToGoal;
 
-    // Delayed strategy: initial amount grows during delay (no contributions)
-    const delayedInitialAmount = calculateProjectedCapital(
-      strategy.initialAmount,
-      0, // No contributions during delay
-      yearlyReturn,
-      taxRate,
-      delayYears
-    );
+    // Delayed strategy: initial amount stays the same during delay (no contributions)
+    // When person delays, they don't make contributions, and initial capital doesn't grow
+    const delayedInitialAmount = strategy.initialAmount;
 
     // Adjust goal for inflation over delay years
     const inflationMultiplier = Math.pow(
