@@ -74,8 +74,6 @@ export const StrategiesGrowthChart = () => {
       .filter((a) => !isNaN(a) && a > 0);
     const minAge = ages.length > 0 ? Math.min(...ages) : 25;
     const maxAge = ages.length > 0 ? Math.max(...ages) : 65;
-    const ageRange = maxAge - minAge;
-    const agePadding = Math.max(1, Math.floor(ageRange * 0.05)); // 5% padding or at least 1 year
 
     const series = strategies.flatMap((strategy) => {
       const color = getStrategyColor(strategy.id);
@@ -148,8 +146,9 @@ export const StrategiesGrowthChart = () => {
           title: {
             text: t("components.features.strategies-growth-chart.xAxisTitle"),
           },
-          min: Math.max(0, minAge - agePadding),
-          max: maxAge + agePadding,
+          min: minAge,
+          max: maxAge,
+          nice: false,
           label: {
             formatter: (params: { value: number }) => {
               const dataPoint = chartData.find((d) => d.age === params.value);
