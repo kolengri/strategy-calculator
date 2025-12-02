@@ -356,16 +356,27 @@ export function calculateDelayCost(
       delayYears
     );
 
-    delayedYearsToGoal = Math.max(0, currentYearsToGoal - delayYears);
-    delayedCapital = calculateProjectedCapital(
-      delayedInitialAmount,
-      strategy.monthlyContribution,
-      yearlyReturn,
-      taxRate,
-      delayedYearsToGoal
-    );
-    // For age-based, goal age remains the same
-    delayedAgeAtGoal = strategy.goalAge;
+    delayedYearsToGoal = currentYearsToGoal - delayYears;
+
+    // If delayYears >= currentYearsToGoal, there's no time left to reach goalAge
+    // Calculate capital at the age when they would start (currentAge + delayYears)
+    // and then project to goalAge, but this will be less than currentCapital
+    if (delayedYearsToGoal <= 0) {
+      // Person starts investing at or after goalAge, so capital is just the delayed initial amount
+      // projected to goalAge (which is the same as delayedInitialAmount if delayedYearsToGoal = 0)
+      delayedCapital = delayedInitialAmount;
+      delayedAgeAtGoal = strategy.currentAge + delayYears; // They start at this age
+    } else {
+      delayedCapital = calculateProjectedCapital(
+        delayedInitialAmount,
+        strategy.monthlyContribution,
+        yearlyReturn,
+        taxRate,
+        delayedYearsToGoal
+      );
+      // For age-based, goal age remains the same
+      delayedAgeAtGoal = strategy.goalAge;
+    }
   } else {
     // Goal-based strategy
     // Current strategy: calculate years to goal starting now
@@ -425,7 +436,11 @@ export function calculateDelayCost(
 
   // Calculate years at goal
   const currentYearAtGoal = currentYear + currentYearsToGoal;
-  const delayedYearAtGoal = currentYear + delayYears + delayedYearsToGoal;
+  // For age-based, if delayedYearsToGoal <= 0, use the age when they would start
+  const delayedYearAtGoal =
+    strategy.type === "age-based" && delayedYearsToGoal <= 0
+      ? currentYear + delayYears
+      : currentYear + delayYears + delayedYearsToGoal;
 
   return {
     currentCapital,

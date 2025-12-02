@@ -45,7 +45,11 @@ export const DelayCostInfo = ({
   // Generate delay periods: 3, 6, 9, 12, ...
   const delayPeriods = useMemo(() => {
     const periods: number[] = [];
-    for (let years = stepYears; years <= effectiveMaxDelayYears; years += stepYears) {
+    for (
+      let years = stepYears;
+      years <= effectiveMaxDelayYears;
+      years += stepYears
+    ) {
       periods.push(years);
     }
     return periods;
@@ -55,7 +59,17 @@ export const DelayCostInfo = ({
   const delayDataList = useMemo(() => {
     return delayPeriods
       .map((delayYears) => calculateDelayCost(strategy, delayYears))
-      .filter((data) => data.cost > 0); // Only show periods with positive cost
+      .filter(({ delayYears, cost }) => {
+        // Only show periods with positive cost and valid scenarios
+        // For age-based, don't show if delayYears >= years to goal (impossible scenario)
+        if (strategy.type === "age-based") {
+          const yearsToGoal = strategy.goalAge - strategy.currentAge;
+          if (delayYears >= yearsToGoal) {
+            return false; // Can't start investing after goal age
+          }
+        }
+        return cost > 0;
+      });
   }, [strategy, delayPeriods]);
 
   if (delayDataList.length === 0) {
@@ -107,13 +121,17 @@ export const DelayCostInfo = ({
                   {t("components.features.delay-cost-info.table.yearAtGoal")}
                 </TableHead>
                 <TableHead className="text-right">
-                  {t("components.features.delay-cost-info.table.delayedCapital")}
+                  {t(
+                    "components.features.delay-cost-info.table.delayedCapital"
+                  )}
                 </TableHead>
                 <TableHead className="text-right">
                   {t("components.features.delay-cost-info.table.cost")}
                 </TableHead>
                 <TableHead className="text-right">
-                  {t("components.features.delay-cost-info.table.costPercentage")}
+                  {t(
+                    "components.features.delay-cost-info.table.costPercentage"
+                  )}
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -155,4 +173,3 @@ export const DelayCostInfo = ({
     </Card>
   );
 };
-
