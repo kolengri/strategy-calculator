@@ -307,12 +307,7 @@ export function calculateCapitalGrowth(
     // Stop if we've reached the goal age for age-based strategies
     // Stop when we reach the goal age (inclusive), so if goalAge is 65, show up to age 65
     if (
-      shouldStopCalculation(
-        strategy,
-        age,
-        capitalAfterWithdrawal,
-        targetAmount
-      )
+      shouldStopCalculation(strategy, age, capitalAfterWithdrawal, targetAmount)
     ) {
       break;
     }
