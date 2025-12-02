@@ -3,10 +3,10 @@ import {
   prepareGrowthData,
   calculateCumulativeContributions,
   getLastRowUpToYear,
-  processStrategyForYear,
-  calculateAverageAge,
-  createYearDataPoint,
-  getAllYears,
+  processStrategyForAge,
+  calculateAverageYear,
+  createAgeDataPoint,
+  getAllAges,
 } from "./prepare-growth-data";
 import type { Strategy } from "@/stores/strategy";
 import { FUNDS } from "@/db/funds";
@@ -151,31 +151,31 @@ describe("getLastRowUpToYear", () => {
   });
 });
 
-describe("calculateAverageAge", () => {
-  test("should calculate average age", () => {
-    const ages = [25, 26, 27];
-    const avgAge = calculateAverageAge(ages);
-    expect(avgAge).toBe(26);
+describe("calculateAverageYear", () => {
+  test("should calculate average year", () => {
+    const years = [2024, 2025, 2026];
+    const avgYear = calculateAverageYear(years);
+    expect(avgYear).toBe(2025);
   });
 
-  test("should round average age", () => {
-    const ages = [25, 26, 27, 28];
-    const avgAge = calculateAverageAge(ages);
-    expect(avgAge).toBe(27); // (25+26+27+28)/4 = 26.5, rounded to 27
+  test("should round average year", () => {
+    const years = [2024, 2025, 2026, 2027];
+    const avgYear = calculateAverageYear(years);
+    expect(avgYear).toBe(2026); // (2024+2025+2026+2027)/4 = 2025.5, rounded to 2026
   });
 
   test("should return 0 for empty array", () => {
-    const avgAge = calculateAverageAge([]);
-    expect(avgAge).toBe(0);
+    const avgYear = calculateAverageYear([]);
+    expect(avgYear).toBe(0);
   });
 
-  test("should handle single age", () => {
-    const avgAge = calculateAverageAge([25]);
-    expect(avgAge).toBe(25);
+  test("should handle single year", () => {
+    const avgYear = calculateAverageYear([2024]);
+    expect(avgYear).toBe(2024);
   });
 });
 
-describe("getAllYears", () => {
+describe("getAllAges", () => {
   test("should return min and max years from growth data", () => {
     const allGrowthData = [
       {
@@ -254,14 +254,14 @@ describe("getAllYears", () => {
       },
     ];
 
-    const result = getAllYears(allGrowthData);
+    const result = getAllAges(allGrowthData);
     expect(result).not.toBeNull();
-    expect(result?.minYear).toBe(2024);
-    expect(result?.maxYear).toBe(2026);
+    expect(result?.minAge).toBe(25);
+    expect(result?.maxAge).toBe(32);
   });
 
   test("should return null for empty data", () => {
-    const result = getAllYears([]);
+    const result = getAllAges([]);
     expect(result).toBeNull();
   });
 
@@ -285,15 +285,15 @@ describe("getAllYears", () => {
       },
     ];
 
-    const result = getAllYears(allGrowthData);
+    const result = getAllAges(allGrowthData);
     expect(result).toBeNull();
   });
 });
 
-describe("processStrategyForYear", () => {
-  test("should process strategy with exact year match", () => {
-    const yearData: any = { year: 2024 };
-    const ages: number[] = [];
+describe("processStrategyForAge", () => {
+  test("should process strategy with exact age match", () => {
+    const ageData: any = { age: 25 };
+    const years: number[] = [];
     const strategy: Strategy = {
       id: "1",
       name: "Strategy 1",
@@ -320,16 +320,16 @@ describe("processStrategyForYear", () => {
       },
     ];
 
-    processStrategyForYear(yearData, ages, strategy, data, 2024);
+    processStrategyForAge(ageData, years, strategy, data, 25);
 
-    expect(yearData["Strategy 1"]).toBe(120700);
-    expect(yearData["Strategy 1_contributions"]).toBe(12000);
-    expect(ages).toContain(25);
+    expect(ageData["Strategy 1"]).toBe(120700);
+    expect(ageData["Strategy 1_contributions"]).toBe(12000);
+    expect(years).toContain(2024);
   });
 
-  test("should use last available row when year doesn't match", () => {
-    const yearData: any = { year: 2025 };
-    const ages: number[] = [];
+  test("should use last available row when age doesn't match", () => {
+    const ageData: any = { age: 26 };
+    const years: number[] = [];
     const strategy: Strategy = {
       id: "1",
       name: "Strategy 1",
@@ -356,15 +356,15 @@ describe("processStrategyForYear", () => {
       },
     ];
 
-    processStrategyForYear(yearData, ages, strategy, data, 2025);
+    processStrategyForAge(ageData, years, strategy, data, 26);
 
-    expect(yearData["Strategy 1"]).toBe(120700);
-    expect(yearData["Strategy 1_contributions"]).toBe(12000);
+    expect(ageData["Strategy 1"]).toBe(120700);
+    expect(ageData["Strategy 1_contributions"]).toBe(12000);
   });
 
   test("should not add data when no rows exist", () => {
-    const yearData: any = { year: 2024 };
-    const ages: number[] = [];
+    const ageData: any = { age: 25 };
+    const years: number[] = [];
     const strategy: Strategy = {
       id: "1",
       name: "Strategy 1",
@@ -380,15 +380,15 @@ describe("processStrategyForYear", () => {
     };
     const data: CapitalGrowthRow[] = [];
 
-    processStrategyForYear(yearData, ages, strategy, data, 2024);
+    processStrategyForAge(ageData, years, strategy, data, 25);
 
-    expect(yearData["Strategy 1"]).toBeUndefined();
-    expect(ages.length).toBe(0);
+    expect(ageData["Strategy 1"]).toBeUndefined();
+    expect(years.length).toBe(0);
   });
 });
 
-describe("createYearDataPoint", () => {
-  test("should create data point for a year with multiple strategies", () => {
+describe("createAgeDataPoint", () => {
+  test("should create data point for an age with multiple strategies", () => {
     const allGrowthData = [
       {
         strategy: {
@@ -446,14 +446,12 @@ describe("createYearDataPoint", () => {
       },
     ];
 
-    const yearData = createYearDataPoint(2024, allGrowthData);
+    const ageData = createAgeDataPoint(25, allGrowthData);
 
-    expect(yearData.year).toBe(2024);
-    expect(yearData["Strategy 1"]).toBe(120700);
-    expect(yearData["Strategy 2"]).toBe(241400);
-    expect(yearData["Strategy 1_contributions"]).toBe(12000);
-    expect(yearData["Strategy 2_contributions"]).toBe(24000);
-    expect(yearData.age).toBe(28); // Average of 25 and 30, rounded
+    expect(ageData.age).toBe(25);
+    expect(ageData["Strategy 1"]).toBe(120700);
+    expect(ageData["Strategy 2"]).toBeUndefined(); // Strategy 2 doesn't have data for age 25
+    expect(ageData["Strategy 1_contributions"]).toBe(12000);
   });
 });
 
@@ -520,11 +518,20 @@ describe("prepareGrowthData", () => {
     const result = prepareGrowthData(strategies);
 
     expect(result.length).toBeGreaterThan(0);
-    const firstPoint = result[0];
-    expect(firstPoint["Strategy 1"]).toBeDefined();
-    expect(firstPoint["Strategy 2"]).toBeDefined();
-    expect(firstPoint["Strategy 1_contributions"]).toBeDefined();
-    expect(firstPoint["Strategy 2_contributions"]).toBeDefined();
+    // Both strategies should have data at some point
+    const hasStrategy1 = result.some((r) => r["Strategy 1"] !== undefined);
+    const hasStrategy2 = result.some((r) => r["Strategy 2"] !== undefined);
+    expect(hasStrategy1).toBe(true);
+    expect(hasStrategy2).toBe(true);
+    
+    // Find a point where both strategies have data
+    const pointWithBoth = result.find(
+      (r) => r["Strategy 1"] !== undefined && r["Strategy 2"] !== undefined
+    );
+    if (pointWithBoth) {
+      expect(pointWithBoth["Strategy 1_contributions"]).toBeDefined();
+      expect(pointWithBoth["Strategy 2_contributions"]).toBeDefined();
+    }
   });
 
   test("should handle strategies with different year ranges", () => {
