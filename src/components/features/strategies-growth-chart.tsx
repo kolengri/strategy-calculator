@@ -3,10 +3,13 @@ import { useTranslation } from "react-i18next";
 import { AgCharts } from "ag-charts-react";
 import type { AgChartOptions } from "ag-charts-community";
 import { useStrategyStore } from "@/stores/strategy";
-import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 import { useCurrencyStore } from "@/stores/currency";
 import { formatCurrency } from "@/utils/currencies";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  prepareGrowthData,
+  type PreparedChartDataPoint,
+} from "@/utils/prepare-growth-data";
 
 // Generate a unique color for each strategy based on its ID
 function getStrategyColor(strategyId: string, index: number): string {
@@ -30,74 +33,24 @@ export const StrategiesGrowthChart = () => {
   const { currency } = useCurrencyStore();
 
   const chartData = useMemo(() => {
-    if (strategies.length === 0) {
-      return [];
-    }
+    const data = prepareGrowthData(strategies);
 
-    // Calculate growth for all strategies
-    const allGrowthData = strategies.map((strategy) => ({
-      strategy,
-      data: calculateCapitalGrowth(strategy),
-    }));
-
-    // Find the maximum year across all strategies
-    const maxYear = Math.max(
-      ...allGrowthData.flatMap(({ data }) => data.map((row) => row.year))
+    // Add labels with age and year (if available)
+    return data.map(
+      (point): PreparedChartDataPoint => ({
+        ...point,
+        yearLabel:
+          point.year !== undefined
+            ? `${point.age} ${t(
+                "components.features.strategies-growth-chart.tooltip.age"
+              )} (${t("components.features.strategies-growth-chart.year")} ${
+                point.year
+              })`
+            : `${point.age} ${t(
+                "components.features.strategies-growth-chart.tooltip.age"
+              )}`,
+      })
     );
-    const minYear = Math.min(
-      ...allGrowthData.flatMap(({ data }) => data.map((row) => row.year))
-    );
-
-    // Create a map of year -> { strategyName: capitalEnd, strategyNameContributions: totalContributions, age: age }
-    const yearMap = new Map<number, Record<string, number | string>>();
-
-    for (let year = minYear; year <= maxYear; year++) {
-      const yearData: Record<string, number | string> = { year };
-      const ages: number[] = [];
-
-      allGrowthData.forEach(({ strategy, data }, index) => {
-        const row = data.find((r) => r.year === year);
-        if (row) {
-          yearData[strategy.name] = row.capitalEnd;
-          // Calculate cumulative contributions up to this year
-          const cumulativeContributions = data
-            .filter((r) => r.year <= year)
-            .reduce((sum, r) => sum + r.contributions, 0);
-          yearData[`${strategy.name}_contributions`] = cumulativeContributions;
-          ages.push(row.age);
-        } else {
-          // If no data for this year, use the last available value
-          const lastRow = data
-            .filter((r) => r.year <= year)
-            .sort((a, b) => b.year - a.year)[0];
-          if (lastRow) {
-            yearData[strategy.name] = lastRow.capitalEnd;
-            // Calculate cumulative contributions up to this year
-            const cumulativeContributions = data
-              .filter((r) => r.year <= year)
-              .reduce((sum, r) => sum + r.contributions, 0);
-            yearData[`${strategy.name}_contributions`] =
-              cumulativeContributions;
-            ages.push(lastRow.age);
-          }
-        }
-      });
-
-      // Add average age for this year (for display purposes)
-      if (ages.length > 0) {
-        const avgAge = Math.round(
-          ages.reduce((a, b) => a + b, 0) / ages.length
-        );
-        yearData.age = avgAge;
-        yearData.yearLabel = `${t(
-          "components.features.strategies-growth-chart.year"
-        )} ${year} (${avgAge})`;
-      }
-
-      yearMap.set(year, yearData);
-    }
-
-    return Array.from(yearMap.values());
   }, [strategies, t]);
 
   const chartOptions: AgChartOptions = useMemo(() => {
@@ -131,26 +84,25 @@ export const StrategiesGrowthChart = () => {
     const valueRange = maxValue - minValue;
     const padding = valueRange > 0 ? valueRange * 0.1 : maxValue * 0.1; // 10% padding
 
-    const years = chartData
-      .map((d) => d.year as number)
-      .filter((y) => !isNaN(y));
-    const minYear =
-      years.length > 0 ? Math.min(...years) : new Date().getFullYear();
-    const maxYear =
-      years.length > 0 ? Math.max(...years) : new Date().getFullYear() + 10;
-    const yearRange = maxYear - minYear;
-    const yearPadding = Math.max(1, Math.floor(yearRange * 0.05)); // 5% padding or at least 1 year
+    // Get age range for X axis
+    const ages = chartData
+      .map((d) => d.age as number)
+      .filter((a) => !isNaN(a) && a > 0);
+    const minAge = ages.length > 0 ? Math.min(...ages) : 25;
+    const maxAge = ages.length > 0 ? Math.max(...ages) : 65;
+    const ageRange = maxAge - minAge;
+    const agePadding = Math.max(1, Math.floor(ageRange * 0.05)); // 5% padding or at least 1 year
 
     const series = strategies.flatMap((strategy, index) => {
       const color = getStrategyColor(strategy.id, index);
       // Capital growth line
       const capitalSeries = {
         type: "line" as const,
-        xKey: "year",
+        xKey: "age",
         yKey: strategy.name,
         yName: strategy.name,
         stroke: color,
-        strokeWidth: 2,
+        strokeWidth: 3,
         marker: {
           enabled: false,
           size: 4,
@@ -158,17 +110,17 @@ export const StrategiesGrowthChart = () => {
         },
       };
 
-      // Contributions line (dashed)
+      // Contributions line (dashed) - собственные вложения пунктиром
       const contributionsSeries = {
         type: "line" as const,
-        xKey: "year",
+        xKey: "age",
         yKey: `${strategy.name}_contributions`,
         yName: `${strategy.name} - ${t(
           "components.features.strategies-growth-chart.contributions"
         )}`,
         stroke: color,
-        strokeWidth: 2,
-        strokeDashArray: [8, 4],
+        strokeWidth: 3,
+        lineDash: [8, 4], // Пунктирная линия для собственных вложений
         marker: {
           enabled: false,
           size: 4,
@@ -203,15 +155,15 @@ export const StrategiesGrowthChart = () => {
           title: {
             text: t("components.features.strategies-growth-chart.xAxisTitle"),
           },
-          min: minYear - yearPadding,
-          max: maxYear + yearPadding,
+          min: Math.max(0, minAge - agePadding),
+          max: maxAge + agePadding,
           label: {
             formatter: (params: { value: number }) => {
-              const dataPoint = chartData.find((d) => d.year === params.value);
+              const dataPoint = chartData.find((d) => d.age === params.value);
               if (dataPoint && dataPoint.yearLabel) {
                 return dataPoint.yearLabel as string;
               }
-              return params.value.toString();
+              return `${params.value}`;
             },
           },
         },
@@ -226,17 +178,52 @@ export const StrategiesGrowthChart = () => {
       tooltip: {
         enabled: true,
         renderer: (params: any) => {
-          const year = params.datum?.year;
-          const age = params.datum?.age;
-          let content = `<div style="padding: 8px;"><strong>${t(
-            "components.features.strategies-growth-chart.tooltip.year"
-          )}: ${year}</strong>`;
-          if (age !== undefined) {
-            content += `<br/><strong>${t(
-              "components.features.strategies-growth-chart.tooltip.age"
-            )}: ${age}</strong>`;
+          const datum = params.datum;
+          const year = datum?.year;
+          const age = datum?.age;
+
+          let content = `<div style="padding: 12px; font-family: system-ui, sans-serif;">`;
+          content += `<div style="margin-bottom: 8px; font-weight: 600; font-size: 14px;">${t(
+            "components.features.strategies-growth-chart.tooltip.age"
+          )}: ${age}`;
+          if (year !== undefined) {
+            content += ` (${t(
+              "components.features.strategies-growth-chart.tooltip.year"
+            )}: ${year})`;
           }
-          content += "</div>";
+          content += `</div>`;
+
+          // Show all series values for all strategies
+          strategies.forEach((strategy) => {
+            const capital = datum?.[strategy.name] as number;
+            const contributions = datum?.[
+              `${strategy.name}_contributions`
+            ] as number;
+
+            if (capital !== undefined && !isNaN(capital)) {
+              content += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.1);">`;
+              content += `<div style="font-weight: 600; color: ${getStrategyColor(
+                strategy.id,
+                strategies.indexOf(strategy)
+              )}; margin-bottom: 4px;">${strategy.name}</div>`;
+              content += `<div style="margin-left: 8px; font-size: 13px;">`;
+              content += `<div>${t(
+                "components.features.strategies-growth-chart.capital"
+              )}: <strong>${formatCurrency(capital, currency)}</strong></div>`;
+              if (contributions !== undefined && !isNaN(contributions)) {
+                content += `<div style="margin-top: 2px;">${t(
+                  "components.features.strategies-growth-chart.contributions"
+                )}: <strong>${formatCurrency(
+                  contributions,
+                  currency
+                )}</strong></div>`;
+              }
+              content += `</div>`;
+              content += `</div>`;
+            }
+          });
+
+          content += `</div>`;
           return content;
         },
       },

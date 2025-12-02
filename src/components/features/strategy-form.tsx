@@ -80,7 +80,6 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                       min={0}
                       max={120}
                       placeholder="65"
-                      deleteOnUnmount
                     />
                   )}
                 </form.AppField>
@@ -95,7 +94,6 @@ export const StrategyForm = ({ defaultValues }: StrategyFormProps) => {
                       min={0}
                       step={1000}
                       placeholder="0"
-                      deleteOnUnmount
                     />
                   )}
                 </form.AppField>

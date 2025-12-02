@@ -53,6 +53,7 @@
         "yAxisTitle": "Capital",
         "year": "Year",
         "contributions": "Contributions",
+        "capital": "Capital",
         "tooltip": {
           "year": "Year",
           "age": "Age"

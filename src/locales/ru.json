@@ -53,6 +53,7 @@
         "yAxisTitle": "Капитал",
         "year": "Год",
         "contributions": "Вложения",
+        "capital": "Капитал",
         "tooltip": {
           "year": "Год",
           "age": "Возраст"

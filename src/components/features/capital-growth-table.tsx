@@ -10,9 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 import { useCurrencyStore } from "@/stores/currency";
 import { formatCurrency } from "@/utils/currencies";
+import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 
 type CapitalGrowthTableProps = {
   strategy: Strategy;
