@@ -6,7 +6,8 @@
   "components": {
     "features": {
       "header": {
-        "title": "Strategy Calculator"
+        "title": "Strategy Calculator",
+        "subtitle": "Plan your financial future"
       },
       "footer": {
         "title": "Strategy Calculator",
