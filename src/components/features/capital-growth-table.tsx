@@ -10,7 +10,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Hint } from "@/components/ui/hint";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
@@ -26,20 +30,19 @@ type TableColumn = {
 };
 
 const TableHeadWithHint = ({ column }: { column: TableColumn }) => {
-  const alignClass = column.align === "right" ? "text-right" : "";
+  const isRight = column.align === "right";
 
   if (!column.hint) {
     return (
-      <TableHead className={`text-xs ${alignClass}`}>{column.label}</TableHead>
+      <TableHead className={`text-xs ${isRight ? "text-right" : ""}`}>
+        {column.label}
+      </TableHead>
     );
   }
 
   return (
-    <TableHead className={`text-xs ${alignClass}`}>
-      <Hint
-        hint={column.hint}
-        className={column.align === "right" ? "justify-end" : ""}
-      >
+    <TableHead className="text-xs">
+      <Hint hint={column.hint} className={isRight ? "w-full justify-end" : ""}>
         {column.label}
       </Hint>
     </TableHead>
@@ -70,14 +73,22 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
       },
       {
         key: "capitalStart",
-        label: t("components.features.capital-growth-table.columns.capitalStart"),
-        hint: t("components.features.capital-growth-table.columns.capitalStartHint"),
+        label: t(
+          "components.features.capital-growth-table.columns.capitalStart"
+        ),
+        hint: t(
+          "components.features.capital-growth-table.columns.capitalStartHint"
+        ),
         align: "right",
       },
       {
         key: "contributions",
-        label: t("components.features.capital-growth-table.columns.contributions"),
-        hint: t("components.features.capital-growth-table.columns.contributionsHint"),
+        label: t(
+          "components.features.capital-growth-table.columns.contributions"
+        ),
+        hint: t(
+          "components.features.capital-growth-table.columns.contributionsHint"
+        ),
         align: "right",
       },
       {
@@ -95,19 +106,27 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
       {
         key: "withdrawal",
         label: t("components.features.capital-growth-table.columns.withdrawal"),
-        hint: t("components.features.capital-growth-table.columns.withdrawalHint"),
+        hint: t(
+          "components.features.capital-growth-table.columns.withdrawalHint"
+        ),
         align: "right",
       },
       {
         key: "capitalEnd",
         label: t("components.features.capital-growth-table.columns.capitalEnd"),
-        hint: t("components.features.capital-growth-table.columns.capitalEndHint"),
+        hint: t(
+          "components.features.capital-growth-table.columns.capitalEndHint"
+        ),
         align: "right",
       },
       {
         key: "goalProgress",
-        label: t("components.features.capital-growth-table.columns.goalProgress"),
-        hint: t("components.features.capital-growth-table.columns.goalProgressHint"),
+        label: t(
+          "components.features.capital-growth-table.columns.goalProgress"
+        ),
+        hint: t(
+          "components.features.capital-growth-table.columns.goalProgressHint"
+        ),
         align: "right",
       },
     ],

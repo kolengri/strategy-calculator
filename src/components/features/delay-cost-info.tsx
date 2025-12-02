@@ -81,78 +81,78 @@ export const DelayCostInfo = ({
                     {t("components.features.delay-cost-info.table.delayYears")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.ageAtStartHint"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t("components.features.delay-cost-info.table.ageAtStart")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.yearAtGoalHint"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t("components.features.delay-cost-info.table.yearAtGoal")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.delayedCapitalHint"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t(
                       "components.features.delay-cost-info.table.delayedCapital"
                     )}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.costHint"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t("components.features.delay-cost-info.table.cost")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.costPercentageHint"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t(
                       "components.features.delay-cost-info.table.costPercentage"
                     )}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.requiredInitialDescription"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t(
                       "components.features.delay-cost-info.table.requiredInitial"
                     )}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t(
                       "components.features.delay-cost-info.table.requiredMonthlyDescription"
                     )}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t(
                       "components.features.delay-cost-info.table.requiredMonthly"

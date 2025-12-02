@@ -28,10 +28,7 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
   const { t } = useTranslation();
   const formatCurrency = useFormatCurrency();
 
-  const baseRows = useMemo(
-    () => calculateCapitalGrowth(strategy),
-    [strategy]
-  );
+  const baseRows = useMemo(() => calculateCapitalGrowth(strategy), [strategy]);
 
   const { scenarios, baseFinalCapital } = useMemo(
     () => generateWhatIfScenarios(strategy, baseRows),
@@ -55,7 +52,9 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
           <span className="text-muted-foreground">
             {t("components.features.what-if.baseScenario")}:
           </span>{" "}
-          <span className="font-semibold">{formatCurrency(baseFinalCapital)}</span>
+          <span className="font-semibold">
+            {formatCurrency(baseFinalCapital)}
+          </span>
         </div>
 
         <div className="overflow-x-auto">
@@ -63,30 +62,36 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
             <TableHeader>
               <TableRow>
                 <TableHead className="text-xs">
-                  <Hint hint={t("components.features.what-if.table.scenarioHint")}>
+                  <Hint
+                    hint={t("components.features.what-if.table.scenarioHint")}
+                  >
                     {t("components.features.what-if.table.scenario")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
-                    hint={t("components.features.what-if.table.finalCapitalHint")}
-                    className="justify-end"
+                    hint={t(
+                      "components.features.what-if.table.finalCapitalHint"
+                    )}
+                    className="w-full justify-end"
                   >
                     {t("components.features.what-if.table.finalCapital")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
                     hint={t("components.features.what-if.table.differenceHint")}
-                    className="justify-end"
+                    className="w-full justify-end"
                   >
                     {t("components.features.what-if.table.difference")}
                   </Hint>
                 </TableHead>
-                <TableHead className="text-right text-xs">
+                <TableHead className="text-xs">
                   <Hint
-                    hint={t("components.features.what-if.table.percentChangeHint")}
-                    className="justify-end"
+                    hint={t(
+                      "components.features.what-if.table.percentChangeHint"
+                    )}
+                    className="w-full justify-end"
                   >
                     {t("components.features.what-if.table.percentChange")}
                   </Hint>
@@ -150,4 +155,3 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
     </Card>
   );
 };
-
