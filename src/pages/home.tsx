@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { BaseLayout } from "@/components/layouts/base";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useStrategyStore } from "@/stores/strategy";
+import { useStrategyStore, type Strategy } from "@/stores/strategy";
 import { PlusIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -11,6 +11,7 @@ import { StrategiesGrowthChart } from "@/components/features/strategies-growth-c
 import { DelayCostInfo } from "@/components/features/delay-cost-info";
 import { StrategySummary } from "@/components/features/strategy-summary";
 import { useEffect, useState } from "react";
+import { isOnlyOneElement } from "@/utils/type-guards/is-only-one-element";
 
 export function Home() {
   const { t } = useTranslation();
@@ -45,17 +46,19 @@ export function Home() {
                     className="group relative transition-all duration-300"
                   >
                     <span className="pr-1 font-medium">{strategy.name}</span>
-                    <Button
-                      className="size-5 opacity-0 group-hover:opacity-100 transition-all duration-300 ml-1 hover:bg-destructive/10 hover:text-destructive"
-                      variant="ghost"
-                      size="icon-sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeStrategy(strategy.id);
-                      }}
-                    >
-                      <XIcon className="size-3" />
-                    </Button>
+                    {!isOnlyOneElement(strategies) && (
+                      <Button
+                        className="size-5 opacity-0 group-hover:opacity-100 transition-all duration-300 ml-1 hover:bg-destructive/10 hover:text-destructive"
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeStrategy(strategy.id);
+                        }}
+                      >
+                        <XIcon className="size-3" />
+                      </Button>
+                    )}
                   </TabsTrigger>
                 ))}
               </div>
