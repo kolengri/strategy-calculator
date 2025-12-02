@@ -53,7 +53,7 @@ const DEFAULT_STRATEGY_VALUES = {
   type: "age-based" as const,
   currentAge: 25,
   inflationRate: 3,
-  initialAmount: 100000,
+  initialAmount: 10000,
   monthlyContribution: 500,
   selectedFund: FUNDS[0].id,
   goalAge: 65,

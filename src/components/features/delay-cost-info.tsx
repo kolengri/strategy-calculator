@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateDelayDataList } from "@/utils/delay-cost";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, HelpCircle } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -14,6 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type DelayCostInfoProps = {
   strategy: Strategy;
@@ -94,14 +100,42 @@ export const DelayCostInfo = ({
                   )}
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t(
-                    "components.features.delay-cost-info.table.requiredInitial"
-                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.requiredInitial"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.requiredInitialDescription"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
                 <TableHead className="text-right text-xs">
-                  {t(
-                    "components.features.delay-cost-info.table.requiredMonthly"
-                  )}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1 cursor-help">
+                        {t(
+                          "components.features.delay-cost-info.table.requiredMonthly"
+                        )}
+                        <HelpCircle className="size-3 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {t(
+                            "components.features.delay-cost-info.table.requiredMonthlyDescription"
+                          )}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </TableHead>
               </TableRow>
             </TableHeader>

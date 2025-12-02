@@ -116,7 +116,9 @@
           "cost": "Loss",
           "costPercentage": "Loss (%)",
           "requiredInitial": "Required initial capital",
+          "requiredInitialDescription": "The initial lump sum you would need to invest to catch up and reach the same final capital despite starting later",
           "requiredMonthly": "Required monthly contribution",
+          "requiredMonthlyDescription": "The monthly contribution you would need to make to catch up and reach the same final capital despite starting later",
           "yearsLabel": "{{years}} years"
         }
       },
