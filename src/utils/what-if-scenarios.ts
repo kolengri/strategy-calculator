@@ -1,17 +1,36 @@
-import type { Strategy } from "@/stores/strategy";
+import type { Strategy, LifeEvent } from "@/stores/strategy";
 import {
   calculateMonthlyReturn,
   calculateYearCapital,
   calculateGoalProgress,
   calculateTargetAmount,
   getEffectiveMaxYears,
-  shouldStopCalculation,
   calculateGoalBasedMonthlyContribution,
   getStrategyFinancialParams,
   type CapitalGrowthRow,
 } from "./calculate-capital-growth";
 import { getCurrentYear } from "./format";
 import { AGE_LIMITS } from "./constants";
+
+/**
+ * Gets life events for a specific age
+ */
+function getLifeEventsForAge(
+  lifeEvents: LifeEvent[] | undefined,
+  age: number
+): LifeEvent[] {
+  if (!lifeEvents || lifeEvents.length === 0) {
+    return [];
+  }
+  return lifeEvents.filter((event) => event.age === age);
+}
+
+/**
+ * Calculates total withdrawal amount for life events
+ */
+function calculateWithdrawal(events: LifeEvent[]): number {
+  return events.reduce((sum, event) => sum + event.amount, 0);
+}
 
 export type WhatIfScenario = {
   id: string;
@@ -23,19 +42,49 @@ export type WhatIfScenario = {
   differencePercentage: number;
 };
 
+export type WhatIfScenariosResult = {
+  scenarios: WhatIfScenario[];
+  baseFinalCapital: number;
+};
+
 /**
  * Generates what-if scenarios for different return rates
  */
 export function generateWhatIfScenarios(
   strategy: Strategy,
   baseRows: CapitalGrowthRow[]
-): WhatIfScenario[] {
+): WhatIfScenariosResult {
   const params = getStrategyFinancialParams(strategy);
   if (!params || baseRows.length === 0) {
-    return [];
+    return { scenarios: [], baseFinalCapital: 0 };
   }
 
-  const baseFinalCapital = baseRows[baseRows.length - 1]?.capitalEnd ?? 0;
+  // Calculate base monthly contribution (same for all scenarios)
+  const baseMonthlyContribution =
+    strategy.type === "goal-based"
+      ? calculateGoalBasedMonthlyContribution(
+          strategy.goal,
+          strategy.initialAmount,
+          strategy.currentAge,
+          strategy.goalAge,
+          params.netYearlyReturn,
+          params.taxRate,
+          strategy.inflationRate
+        )
+      : strategy.monthlyContribution;
+
+  // For fair comparison, calculate base scenario with same logic (until goalAge)
+  // This ensures we compare capital at the same point in time
+  const baseScenarioRows = calculateCapitalGrowthWithModifiedReturn(
+    strategy,
+    0, // no modifier for base
+    baseMonthlyContribution
+  );
+  const baseFinalCapital =
+    baseScenarioRows.length > 0
+      ? baseScenarioRows[baseScenarioRows.length - 1]?.capitalEnd ?? 0
+      : baseRows[baseRows.length - 1]?.capitalEnd ?? 0;
+
   const modifiers = [
     { id: "pessimistic-3", name: "-3%", modifier: -0.03 },
     { id: "pessimistic-2", name: "-2%", modifier: -0.02 },
@@ -45,11 +94,12 @@ export function generateWhatIfScenarios(
     { id: "optimistic-3", name: "+3%", modifier: 0.03 },
   ];
 
-  return modifiers
+  const scenarios = modifiers
     .map((mod) => {
       const rows = calculateCapitalGrowthWithModifiedReturn(
         strategy,
-        mod.modifier
+        mod.modifier,
+        baseMonthlyContribution
       );
 
       if (rows.length === 0) {
@@ -72,14 +122,18 @@ export function generateWhatIfScenarios(
       };
     })
     .filter((scenario): scenario is WhatIfScenario => scenario !== null);
+
+  return { scenarios, baseFinalCapital };
 }
 
 /**
  * Calculate capital growth with a modified return rate
+ * Uses the base monthly contribution to show how return changes affect outcome
  */
 function calculateCapitalGrowthWithModifiedReturn(
   strategy: Strategy,
-  returnModifier: number
+  returnModifier: number,
+  baseMonthlyContribution: number
 ): CapitalGrowthRow[] {
   const params = getStrategyFinancialParams(strategy);
   if (!params) {
@@ -92,20 +146,8 @@ function calculateCapitalGrowthWithModifiedReturn(
   const monthlyReturn = calculateMonthlyReturn(modifiedNetReturn);
   const taxRate = strategy.taxRate / 100;
 
-  let monthlyContribution: number;
-  if (strategy.type === "goal-based") {
-    monthlyContribution = calculateGoalBasedMonthlyContribution(
-      strategy.goal,
-      strategy.initialAmount,
-      strategy.currentAge,
-      strategy.goalAge,
-      modifiedNetReturn,
-      taxRate,
-      strategy.inflationRate
-    );
-  } else {
-    monthlyContribution = strategy.monthlyContribution;
-  }
+  // Use the same monthly contribution as base scenario for fair comparison
+  const monthlyContribution = baseMonthlyContribution;
 
   const strategyWithMonthlyContribution =
     strategy.type === "goal-based"
@@ -137,13 +179,22 @@ function calculateCapitalGrowthWithModifiedReturn(
       taxRate
     );
 
-    currentCapital = yearResult.capitalEnd;
+    // Get life events for this year and calculate withdrawal
+    const yearLifeEvents = getLifeEventsForAge(strategy.lifeEvents, age);
+    const withdrawal = calculateWithdrawal(yearLifeEvents);
+
+    // Apply withdrawal after year-end calculations
+    const capitalAfterWithdrawal = Math.max(
+      0,
+      yearResult.capitalEnd - withdrawal
+    );
+    currentCapital = capitalAfterWithdrawal;
 
     const goalProgress = calculateGoalProgress(
       strategy,
       year,
       yearsToGoal,
-      yearResult.capitalEnd,
+      capitalAfterWithdrawal,
       targetAmount
     );
 
@@ -154,13 +205,15 @@ function calculateCapitalGrowthWithModifiedReturn(
       contributions: Math.round(yearResult.annualContributions),
       return: Math.round(yearResult.totalReturn),
       tax: Math.round(yearResult.tax),
-      capitalEnd: Math.round(yearResult.capitalEnd),
+      withdrawal: Math.round(withdrawal),
+      lifeEvents: yearLifeEvents,
+      capitalEnd: Math.round(capitalAfterWithdrawal),
       goalProgress: Math.min(goalProgress, 100),
     });
 
-    if (
-      shouldStopCalculation(strategy, age, yearResult.capitalEnd, targetAmount)
-    ) {
+    // For what-if scenarios, only stop at goalAge, not when goal is reached
+    // This allows comparing final capital at the same point in time
+    if (age >= strategy.goalAge) {
       break;
     }
   }

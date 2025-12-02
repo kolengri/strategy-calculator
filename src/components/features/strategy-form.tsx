@@ -113,7 +113,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.FancyRadioButton
                   label={t("components.features.strategy-form.fields.type")}
-                  hint={t(`components.features.strategy-form.type.${formValues.type}Hint`)}
+                  hint={t(
+                    `components.features.strategy-form.type.${formValues.type}Hint`
+                  )}
                   options={STRATEGY_TYPES.map((type) => ({
                     label: t(`components.features.strategy-form.type.${type}`),
                     value: type,
@@ -126,13 +128,7 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
           </div>
 
           {/* Second row: Ages + Goal (if goal-based) */}
-          <div
-            className={`grid gap-3 ${
-              isGoalBased
-                ? "grid-cols-2 md:grid-cols-4"
-                : "grid-cols-2 md:grid-cols-4"
-            }`}
-          >
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
             <form.AppField name="currentAge">
               {(field) => (
                 <field.NumberField
@@ -153,7 +149,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.NumberField
                   label={t("components.features.strategy-form.fields.goalAge")}
-                  hint={t("components.features.strategy-form.fields.goalAgeHint")}
+                  hint={t(
+                    "components.features.strategy-form.fields.goalAgeHint"
+                  )}
                   required
                   min={AGE_LIMITS.MIN}
                   max={AGE_LIMITS.MAX}
@@ -184,7 +182,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
                 {(field) => (
                   <field.NumberField
                     label={t("components.features.strategy-form.fields.goal")}
-                    hint={t("components.features.strategy-form.fields.goalHint")}
+                    hint={t(
+                      "components.features.strategy-form.fields.goalHint"
+                    )}
                     required
                     min={0}
                     step={1000}
@@ -256,7 +256,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               {(field) => (
                 <field.NumberField
                   label={t("components.features.strategy-form.fields.taxRate")}
-                  hint={t("components.features.strategy-form.fields.taxRateHint")}
+                  hint={t(
+                    "components.features.strategy-form.fields.taxRateHint"
+                  )}
                   required
                   min={0}
                   max={100}

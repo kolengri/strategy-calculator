@@ -158,7 +158,7 @@ export const StrategySummary = ({ strategy }: StrategySummaryProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 lg:grid-cols-3 xxl:grid-cols-6 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xxl:grid-cols-6 gap-3">
           {items.map((item) => (
             <div
               key={item.label}
