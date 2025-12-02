@@ -1,5 +1,8 @@
 import type { Strategy } from "@/stores/strategy";
-import { calculateDelayCost, type DelayCostResult } from "./calculate-capital-growth";
+import {
+  calculateDelayCost,
+  type DelayCostResult,
+} from "./calculate-capital-growth";
 
 const DEFAULT_MAX_DELAY_YEARS = 30;
 
@@ -79,6 +82,7 @@ export function calculateDelayDataList(
 
   return periods
     .map((delayYears) => calculateDelayCost(strategy, delayYears))
-    .filter((data) => isValidDelayScenario(strategy, data.delayYears, data.cost));
+    .filter((data) =>
+      isValidDelayScenario(strategy, data.delayYears, data.cost)
+    );
 }
-

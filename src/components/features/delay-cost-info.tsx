@@ -4,7 +4,7 @@ import type { Strategy } from "@/stores/strategy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
-import { calculateDelayCost } from "@/utils/calculate-capital-growth";
+import { calculateDelayDataList } from "@/utils/delay-cost";
 import { AlertCircle } from "lucide-react";
 import {
   Table,
@@ -29,55 +29,17 @@ export const DelayCostInfo = ({
   const { t } = useTranslation();
   const formatCurrency = useFormatCurrency();
 
-  // Determine max delay years based on strategy type
-  const effectiveMaxDelayYears = useMemo(() => {
-    if (maxDelayYears !== undefined) {
-      return maxDelayYears;
-    }
-    if (strategy.type === "age-based") {
-      // For age-based, limit to years until goal age
-      return Math.max(0, strategy.goalAge - strategy.currentAge - 1);
-    }
-    // For goal-based, use a reasonable default (30 years)
-    return 30;
-  }, [strategy, maxDelayYears]);
-
-  // Generate delay periods: 3, 6, 9, 12, ...
-  const delayPeriods = useMemo(() => {
-    const periods: number[] = [];
-    for (
-      let years = stepYears;
-      years <= effectiveMaxDelayYears;
-      years += stepYears
-    ) {
-      periods.push(years);
-    }
-    return periods;
-  }, [stepYears, effectiveMaxDelayYears]);
-
-  // Calculate delay costs for all periods
-  const delayDataList = useMemo(() => {
-    return delayPeriods
-      .map((delayYears) => calculateDelayCost(strategy, delayYears))
-      .filter(({ delayYears, cost }) => {
-        // Only show periods with positive cost and valid scenarios
-        // For age-based, don't show if delayYears >= years to goal (impossible scenario)
-        if (strategy.type === "age-based") {
-          const yearsToGoal = strategy.goalAge - strategy.currentAge;
-          if (delayYears >= yearsToGoal) {
-            return false; // Can't start investing after goal age
-          }
-        }
-        return cost > 0;
-      });
-  }, [strategy, delayPeriods]);
+  const delayDataList = useMemo(
+    () => calculateDelayDataList(strategy, stepYears, maxDelayYears),
+    [strategy, stepYears, maxDelayYears]
+  );
 
   if (delayDataList.length === 0) {
     return null;
   }
 
-  // Get current capital from first calculation (all should have same currentCapital)
   const currentCapital = delayDataList[0]?.currentCapital || 0;
+  const currentYearAtGoal = delayDataList[0]?.currentYearAtGoal || 0;
 
   return (
     <Card className="border-orange-200 bg-orange-50/30">
@@ -101,9 +63,7 @@ export const DelayCostInfo = ({
             <span className="text-muted-foreground">
               {t("components.features.delay-cost-info.currentYearAtGoal")}
             </span>
-            <span className="font-semibold">
-              {delayDataList[0]?.currentYearAtGoal || 0}
-            </span>
+            <span className="font-semibold">{currentYearAtGoal}</span>
           </div>
         </div>
 
@@ -185,9 +145,7 @@ export const DelayCostInfo = ({
         </div>
 
         <p className="text-xs text-muted-foreground">
-          {t("components.features.delay-cost-info.description", {
-            stepYears,
-          })}
+          {t("components.features.delay-cost-info.description", { stepYears })}
         </p>
       </CardContent>
     </Card>
