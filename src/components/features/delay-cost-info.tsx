@@ -133,6 +133,16 @@ export const DelayCostInfo = ({
                     "components.features.delay-cost-info.table.costPercentage"
                   )}
                 </TableHead>
+                <TableHead className="text-right">
+                  {t(
+                    "components.features.delay-cost-info.table.requiredInitial"
+                  )}
+                </TableHead>
+                <TableHead className="text-right">
+                  {t(
+                    "components.features.delay-cost-info.table.requiredMonthly"
+                  )}
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -157,6 +167,19 @@ export const DelayCostInfo = ({
                   </TableCell>
                   <TableCell className="text-right text-orange-600 dark:text-orange-400">
                     -{data.costPercentage.toFixed(1)}%
+                  </TableCell>
+                  <TableCell className="text-right text-blue-700 dark:text-blue-300">
+                    {data.requiredInitialAmount !== null
+                      ? formatCurrency(data.requiredInitialAmount, currency)
+                      : "-"}
+                  </TableCell>
+                  <TableCell className="text-right text-blue-700 dark:text-blue-300">
+                    {data.requiredMonthlyContribution !== null
+                      ? formatCurrency(
+                          data.requiredMonthlyContribution,
+                          currency
+                        )
+                      : "-"}
                   </TableCell>
                 </TableRow>
               ))}

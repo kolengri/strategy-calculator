@@ -73,6 +73,8 @@
           "delayedCapital": "Капитал при промедлении",
           "cost": "Потеря",
           "costPercentage": "Потеря (%)",
+          "requiredInitial": "Нужный стартовый капитал",
+          "requiredMonthly": "Нужный ежемесячный взнос",
           "yearsLabel": "{{years}} года"
         }
       }

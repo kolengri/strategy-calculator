@@ -285,6 +285,105 @@ export function estimateYearsToGoal(
 }
 
 /**
+ * Calculates required initial amount to reach target capital
+ * Uses binary search for efficiency
+ */
+export function calculateRequiredInitialAmount(
+  targetCapital: number,
+  monthlyContribution: number,
+  yearlyReturn: number,
+  taxRate: number,
+  years: number
+): number {
+  if (years <= 0) {
+    return targetCapital;
+  }
+
+  const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
+  
+  // Binary search for initial amount
+  let low = 0;
+  let high = targetCapital;
+  let result = 0;
+  const tolerance = 1; // 1 unit precision
+
+  while (high - low > tolerance) {
+    const mid = (low + high) / 2;
+    const projected = calculateProjectedCapital(
+      mid,
+      monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      years
+    );
+
+    if (projected >= targetCapital) {
+      result = mid;
+      high = mid;
+    } else {
+      low = mid;
+    }
+  }
+
+  return Math.ceil(result);
+}
+
+/**
+ * Calculates required monthly contribution to reach target capital
+ * Uses binary search for efficiency
+ */
+export function calculateRequiredMonthlyContribution(
+  targetCapital: number,
+  initialAmount: number,
+  yearlyReturn: number,
+  taxRate: number,
+  years: number
+): number {
+  if (years <= 0) {
+    return 0;
+  }
+
+  const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
+  
+  // Binary search for monthly contribution
+  // Upper bound: assume we need to contribute the entire target (worst case)
+  let low = 0;
+  let high = Math.max(
+    targetCapital / (years * 12),
+    (targetCapital - initialAmount) / (years * 12)
+  );
+  let result = 0;
+  const tolerance = 0.01; // 1 cent precision
+  const maxIterations = 100; // Safety limit
+  let iterations = 0;
+
+  while (high - low > tolerance && iterations < maxIterations) {
+    iterations++;
+    const mid = (low + high) / 2;
+    const projected = calculateProjectedCapital(
+      initialAmount,
+      mid,
+      yearlyReturn,
+      taxRate,
+      years
+    );
+
+    if (projected >= targetCapital) {
+      result = mid;
+      high = mid;
+    } else {
+      low = mid;
+      // If we're still too low, increase upper bound
+      if (iterations > 50 && projected < targetCapital * 0.9) {
+        high = mid * 2;
+      }
+    }
+  }
+
+  return Math.ceil(result * 100) / 100; // Round to cents
+}
+
+/**
  * Calculates the cost of delay - how much it costs to start investing later
  * @param strategy - The current strategy
  * @param delayYears - Number of years to delay (default: 3)
@@ -303,6 +402,8 @@ export function calculateDelayCost(
   delayedAgeAtGoal: number;
   currentYearAtGoal: number;
   delayedYearAtGoal: number;
+  requiredInitialAmount: number | null;
+  requiredMonthlyContribution: number | null;
 } {
   const fund = FUNDS.find((f) => f.id === strategy.selectedFund);
   const currentYear = new Date().getFullYear();
@@ -318,6 +419,8 @@ export function calculateDelayCost(
       delayedAgeAtGoal: strategy.currentAge + delayYears,
       currentYearAtGoal: currentYear,
       delayedYearAtGoal: currentYear + delayYears,
+      requiredInitialAmount: null,
+      requiredMonthlyContribution: null,
     };
   }
 
@@ -435,6 +538,30 @@ export function calculateDelayCost(
       ? currentYear + delayYears
       : currentYear + delayYears + delayedYearsToGoal;
 
+  // Calculate required adjustments to match current capital
+  let requiredInitialAmount: number | null = null;
+  let requiredMonthlyContribution: number | null = null;
+
+  if (delayedYearsToGoal > 0 && currentCapital > delayedCapital) {
+    // Calculate required initial amount (keeping monthly contribution the same)
+    requiredInitialAmount = calculateRequiredInitialAmount(
+      currentCapital,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      delayedYearsToGoal
+    );
+
+    // Calculate required monthly contribution (keeping initial amount the same)
+    requiredMonthlyContribution = calculateRequiredMonthlyContribution(
+      currentCapital,
+      strategy.initialAmount,
+      yearlyReturn,
+      taxRate,
+      delayedYearsToGoal
+    );
+  }
+
   return {
     currentCapital,
     delayedCapital,
@@ -445,5 +572,7 @@ export function calculateDelayCost(
     delayedAgeAtGoal,
     currentYearAtGoal,
     delayedYearAtGoal,
+    requiredInitialAmount,
+    requiredMonthlyContribution,
   };
 }

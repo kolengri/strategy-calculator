@@ -73,6 +73,8 @@
           "delayedCapital": "Capital with delay",
           "cost": "Loss",
           "costPercentage": "Loss (%)",
+          "requiredInitial": "Required initial capital",
+          "requiredMonthly": "Required monthly contribution",
           "yearsLabel": "{{years}} years"
         }
       }
