@@ -58,6 +58,23 @@
           "year": "Year",
           "age": "Age"
         }
+      },
+      "delay-cost-info": {
+        "title": "Cost of Delay",
+        "currentCapital": "Capital if starting now",
+        "currentYearAtGoal": "Year at goal",
+        "delayedCapital": "Capital if starting in {{years}} years",
+        "cost": "Cost of delay ({{years}} years)",
+        "description": "If you start investing every {{stepYears}} years later, you will lose the indicated amount from your final capital.",
+        "table": {
+          "delayYears": "Delay",
+          "ageAtStart": "Age at start",
+          "yearAtGoal": "Year at goal",
+          "delayedCapital": "Capital with delay",
+          "cost": "Loss",
+          "costPercentage": "Loss (%)",
+          "yearsLabel": "{{years}} years"
+        }
       }
     },
     "ui": {

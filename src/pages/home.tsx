@@ -8,6 +8,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { StrategyForm } from "@/components/features/strategy-form";
 import { CapitalGrowthTable } from "@/components/features/capital-growth-table";
 import { StrategiesGrowthChart } from "@/components/features/strategies-growth-chart";
+import { DelayCostInfo } from "@/components/features/delay-cost-info";
 import { useEffect, useState } from "react";
 
 export function Home() {
@@ -87,6 +88,7 @@ export function Home() {
                 </h2>
               </div>
               <StrategyForm defaultValues={strategy} />
+              <DelayCostInfo strategy={strategy} />
               <CapitalGrowthTable strategy={strategy} />
             </div>
           </TabsContent>

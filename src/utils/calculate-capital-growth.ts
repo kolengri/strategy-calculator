@@ -283,3 +283,159 @@ export function estimateYearsToGoal(
 
   return years;
 }
+
+/**
+ * Calculates the cost of delay - how much it costs to start investing later
+ * @param strategy - The current strategy
+ * @param delayYears - Number of years to delay (default: 3)
+ * @returns Object with delay cost information
+ */
+export function calculateDelayCost(
+  strategy: Strategy,
+  delayYears: number = 3
+): {
+  currentCapital: number;
+  delayedCapital: number;
+  cost: number;
+  costPercentage: number;
+  delayYears: number;
+  currentAgeAtGoal: number;
+  delayedAgeAtGoal: number;
+  currentYearAtGoal: number;
+  delayedYearAtGoal: number;
+} {
+  const fund = FUNDS.find((f) => f.id === strategy.selectedFund);
+  const currentYear = new Date().getFullYear();
+
+  if (!fund) {
+    return {
+      currentCapital: 0,
+      delayedCapital: 0,
+      cost: 0,
+      costPercentage: 0,
+      delayYears,
+      currentAgeAtGoal: strategy.currentAge,
+      delayedAgeAtGoal: strategy.currentAge + delayYears,
+      currentYearAtGoal: currentYear,
+      delayedYearAtGoal: currentYear + delayYears,
+    };
+  }
+
+  const yearlyReturn = fund.yearlyReturn;
+  const taxRate = strategy.taxRate / 100;
+
+  // Calculate current strategy capital at goal
+  let currentCapital: number;
+  let delayedCapital: number;
+  let currentAgeAtGoal: number;
+  let delayedAgeAtGoal: number;
+  let currentYearsToGoal: number;
+  let delayedYearsToGoal: number;
+
+  if (strategy.type === "age-based") {
+    currentYearsToGoal = strategy.goalAge - strategy.currentAge;
+
+    // Current strategy: start now
+    currentCapital = calculateProjectedCapital(
+      strategy.initialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      currentYearsToGoal
+    );
+    currentAgeAtGoal = strategy.goalAge;
+
+    // Delayed strategy: start delayYears later
+    // Calculate what the initial amount would be after delayYears without contributions
+    // (just the initial amount growing, but we assume no contributions during delay)
+    const delayedInitialAmount = calculateProjectedCapital(
+      strategy.initialAmount,
+      0, // No contributions during delay
+      yearlyReturn,
+      taxRate,
+      delayYears
+    );
+
+    delayedYearsToGoal = Math.max(0, currentYearsToGoal - delayYears);
+    delayedCapital = calculateProjectedCapital(
+      delayedInitialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      delayedYearsToGoal
+    );
+    // For age-based, goal age remains the same
+    delayedAgeAtGoal = strategy.goalAge;
+  } else {
+    // Goal-based strategy
+    // Current strategy: calculate years to goal starting now
+    currentYearsToGoal = estimateYearsToGoal(
+      strategy.initialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      strategy.goal
+    );
+
+    currentCapital = calculateProjectedCapital(
+      strategy.initialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      currentYearsToGoal
+    );
+    currentAgeAtGoal = strategy.currentAge + currentYearsToGoal;
+
+    // Delayed strategy: initial amount grows during delay (no contributions)
+    const delayedInitialAmount = calculateProjectedCapital(
+      strategy.initialAmount,
+      0, // No contributions during delay
+      yearlyReturn,
+      taxRate,
+      delayYears
+    );
+
+    // Adjust goal for inflation over delay years
+    const inflationMultiplier = Math.pow(
+      1 + strategy.inflationRate / 100,
+      delayYears
+    );
+    const delayedGoal = strategy.goal * inflationMultiplier;
+
+    delayedYearsToGoal = estimateYearsToGoal(
+      delayedInitialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      delayedGoal
+    );
+
+    delayedCapital = calculateProjectedCapital(
+      delayedInitialAmount,
+      strategy.monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      delayedYearsToGoal
+    );
+    delayedAgeAtGoal = strategy.currentAge + delayYears + delayedYearsToGoal;
+  }
+
+  const cost = currentCapital - delayedCapital;
+  const costPercentage = currentCapital > 0 ? (cost / currentCapital) * 100 : 0;
+
+  // Calculate years at goal
+  const currentYearAtGoal = currentYear + currentYearsToGoal;
+  const delayedYearAtGoal = currentYear + delayYears + delayedYearsToGoal;
+
+  return {
+    currentCapital,
+    delayedCapital,
+    cost,
+    costPercentage,
+    delayYears,
+    currentAgeAtGoal,
+    delayedAgeAtGoal,
+    currentYearAtGoal,
+    delayedYearAtGoal,
+  };
+}
