@@ -33,6 +33,19 @@
           "financial": "Financial Details",
           "goal": "Goal Settings"
         }
+      },
+      "capital-growth-table": {
+        "title": "Capital Growth to Goal",
+        "columns": {
+          "year": "Year",
+          "age": "Age",
+          "capitalStart": "Capital Start",
+          "contributions": "Contributions",
+          "return": "Return",
+          "tax": "Tax",
+          "capitalEnd": "Capital End",
+          "goalProgress": "Goal Progress"
+        }
       }
     },
     "ui": {

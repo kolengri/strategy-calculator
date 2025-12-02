@@ -25,12 +25,26 @@
           "initialAmount": "Начальная сумма",
           "monthlyContribution": "Ежемесячный взнос",
           "selectedFund": "Инвестиционный фонд",
-          "inflationRate": "Уровень инфляции (%)"
+          "inflationRate": "Уровень инфляции (%)",
+          "taxRate": "Налоговая ставка (%)"
         },
         "sections": {
           "basic": "Основная информация",
           "financial": "Финансовые детали",
           "goal": "Настройки цели"
+        }
+      },
+      "capital-growth-table": {
+        "title": "Рост капитала к цели",
+        "columns": {
+          "year": "Год",
+          "age": "Возраст",
+          "capitalStart": "Капитал на начало",
+          "contributions": "Взносы",
+          "return": "Доходность",
+          "tax": "Налог",
+          "capitalEnd": "Капитал на конец",
+          "goalProgress": "Прогресс к цели"
         }
       }
     }

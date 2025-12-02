@@ -6,6 +6,7 @@ import { PlusIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { StrategyForm } from "@/components/features/strategy-form";
+import { CapitalGrowthTable } from "@/components/features/capital-growth-table";
 import { useEffect, useState } from "react";
 
 export function Home() {
@@ -82,6 +83,7 @@ export function Home() {
                 </h2>
               </div>
               <StrategyForm defaultValues={strategy} />
+              <CapitalGrowthTable strategy={strategy} />
             </div>
           </TabsContent>
         ))}
