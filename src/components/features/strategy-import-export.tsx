@@ -17,7 +17,9 @@ export function StrategyImportExport() {
 
   const handleExport = () => {
     const json = strategiesToJSON(strategies);
-    const filename = `strategies-${new Date().toISOString().split("T")[0]}.json`;
+    const filename = `strategies-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
     downloadFile(json, filename, "application/json;charset=utf-8;");
   };
 
@@ -79,4 +81,3 @@ export function StrategyImportExport() {
     </div>
   );
 }
-

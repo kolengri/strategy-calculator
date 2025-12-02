@@ -9,6 +9,16 @@ import i18n from "@/lib/i18n";
 export const STRATEGY_TYPES = ["age-based", "goal-based"] as const;
 export type StrategyType = (typeof STRATEGY_TYPES)[number];
 
+/**
+ * A life event that withdraws funds from the investment
+ */
+export type LifeEvent = {
+  id: string;
+  name: string;
+  age: number;
+  amount: number;
+};
+
 type StrategyBase = {
   id: string;
   name: string;
@@ -20,6 +30,7 @@ type StrategyBase = {
   selectedFund: (typeof FUNDS)[number]["id"];
   inflationRate: number;
   taxRate: number;
+  lifeEvents?: LifeEvent[];
 };
 
 export type AgeBasedStrategy = StrategyBase & {
@@ -47,6 +58,7 @@ const DEFAULT_STRATEGY_VALUES = {
   selectedFund: FUNDS[0].id,
   goalAge: 65,
   taxRate: 13,
+  lifeEvents: [] as LifeEvent[],
 };
 
 /**

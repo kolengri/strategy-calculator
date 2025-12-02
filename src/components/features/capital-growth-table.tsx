@@ -10,10 +10,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useFormatCurrency } from "@/hooks/useFormatCurrency";
 import { formatPercentage } from "@/utils/format";
 import { calculateCapitalGrowth } from "@/utils/calculate-capital-growth";
 import { ExportCSVButton } from "./export-csv-button";
+import { CalendarIcon } from "lucide-react";
 
 type CapitalGrowthTableProps = {
   strategy: Strategy;
@@ -67,6 +74,9 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
                   {t("components.features.capital-growth-table.columns.tax")}
                 </TableHead>
                 <TableHead className="text-right text-xs">
+                  {t("components.features.capital-growth-table.columns.withdrawal")}
+                </TableHead>
+                <TableHead className="text-right text-xs">
                   {t("components.features.capital-growth-table.columns.capitalEnd")}
                 </TableHead>
                 <TableHead className="text-right text-xs">
@@ -76,7 +86,10 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
             </TableHeader>
             <TableBody>
               {growthData.map((row) => (
-                <TableRow key={row.year}>
+                <TableRow
+                  key={row.year}
+                  className={row.withdrawal > 0 ? "bg-amber-500/5" : ""}
+                >
                   <TableCell className="text-sm">{row.year}</TableCell>
                   <TableCell className="text-sm">{row.age}</TableCell>
                   <TableCell className="text-right text-sm">
@@ -90,6 +103,31 @@ export const CapitalGrowthTable = ({ strategy }: CapitalGrowthTableProps) => {
                   </TableCell>
                   <TableCell className="text-right text-sm text-red-600">
                     -{formatCurrency(row.tax)}
+                  </TableCell>
+                  <TableCell className="text-right text-sm">
+                    {row.withdrawal > 0 ? (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="text-amber-600 font-medium cursor-help inline-flex items-center gap-1">
+                              <CalendarIcon className="size-3" />-
+                              {formatCurrency(row.withdrawal)}
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="text-xs">
+                              {row.lifeEvents.map((e) => (
+                                <div key={e.id}>
+                                  {e.name}: {formatCurrency(e.amount)}
+                                </div>
+                              ))}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right text-sm font-semibold">
                     {formatCurrency(row.capitalEnd)}

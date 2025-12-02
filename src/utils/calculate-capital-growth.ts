@@ -1,4 +1,4 @@
-import type { Strategy } from "@/stores/strategy";
+import type { Strategy, LifeEvent } from "@/stores/strategy";
 import { getFundById, type Fund } from "@/db/funds";
 import { AGE_LIMITS, CALCULATION_LIMITS } from "./constants";
 import { getCurrentYear } from "./format";
@@ -10,6 +10,8 @@ export type CapitalGrowthRow = {
   contributions: number;
   return: number;
   tax: number;
+  withdrawal: number; // life event withdrawals
+  lifeEvents: LifeEvent[]; // life events that occurred this year
   capitalEnd: number;
   goalProgress: number; // percentage of goal achieved
 };
@@ -204,6 +206,26 @@ function getStrategyMonthlyContribution(
   return strategy.monthlyContribution;
 }
 
+/**
+ * Gets life events for a specific age
+ */
+function getLifeEventsForAge(
+  lifeEvents: LifeEvent[] | undefined,
+  age: number
+): LifeEvent[] {
+  if (!lifeEvents || lifeEvents.length === 0) {
+    return [];
+  }
+  return lifeEvents.filter((event) => event.age === age);
+}
+
+/**
+ * Calculates total withdrawal amount for life events
+ */
+function calculateWithdrawal(events: LifeEvent[]): number {
+  return events.reduce((sum, event) => sum + event.amount, 0);
+}
+
 export function calculateCapitalGrowth(
   strategy: Strategy,
   maxYears: number = AGE_LIMITS.MAX_INVESTMENT_YEARS
@@ -249,14 +271,23 @@ export function calculateCapitalGrowth(
       taxRate
     );
 
-    currentCapital = yearResult.capitalEnd;
+    // Get life events for this year and calculate withdrawal
+    const yearLifeEvents = getLifeEventsForAge(strategy.lifeEvents, age);
+    const withdrawal = calculateWithdrawal(yearLifeEvents);
+
+    // Apply withdrawal after year-end calculations
+    const capitalAfterWithdrawal = Math.max(
+      0,
+      yearResult.capitalEnd - withdrawal
+    );
+    currentCapital = capitalAfterWithdrawal;
 
     // Calculate goal progress
     const goalProgress = calculateGoalProgress(
       strategy,
       year,
       yearsToGoal,
-      yearResult.capitalEnd,
+      capitalAfterWithdrawal,
       targetAmount
     );
 
@@ -267,14 +298,21 @@ export function calculateCapitalGrowth(
       contributions: Math.round(yearResult.annualContributions),
       return: Math.round(yearResult.totalReturn),
       tax: Math.round(yearResult.tax),
-      capitalEnd: Math.round(yearResult.capitalEnd),
+      withdrawal: Math.round(withdrawal),
+      lifeEvents: yearLifeEvents,
+      capitalEnd: Math.round(capitalAfterWithdrawal),
       goalProgress: Math.min(goalProgress, 100), // Cap at 100%
     });
 
     // Stop if we've reached the goal age for age-based strategies
     // Stop when we reach the goal age (inclusive), so if goalAge is 65, show up to age 65
     if (
-      shouldStopCalculation(strategy, age, yearResult.capitalEnd, targetAmount)
+      shouldStopCalculation(
+        strategy,
+        age,
+        capitalAfterWithdrawal,
+        targetAmount
+      )
     ) {
       break;
     }

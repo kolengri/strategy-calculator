@@ -84,6 +84,7 @@
           "contributions": "Contributions",
           "return": "Return",
           "tax": "Tax",
+          "withdrawal": "Withdrawal",
           "capitalEnd": "Capital End",
           "goalProgress": "Goal Progress"
         }
@@ -117,6 +118,22 @@
           "requiredInitial": "Required initial capital",
           "requiredMonthly": "Required monthly contribution",
           "yearsLabel": "{{years}} years"
+        }
+      },
+      "life-events": {
+        "title": "Life Events",
+        "description": "Add major expenses (buying a home, wedding, education) to see their impact on capital growth.",
+        "addEvent": "Add event",
+        "totalWithdrawals": "Total withdrawals",
+        "empty": "No planned events",
+        "atAge": "At age {{age}}",
+        "cancel": "Cancel",
+        "add": "Add",
+        "namePlaceholder": "Buying an apartment",
+        "fields": {
+          "name": "Event name",
+          "age": "Age",
+          "amount": "Amount"
         }
       }
     },

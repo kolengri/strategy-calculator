@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { BaseLayout } from "@/components/layouts/base";
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
-import { useStrategyStore } from "@/stores/strategy";
+import { useStrategyStore, type LifeEvent } from "@/stores/strategy";
 import { PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -12,13 +12,19 @@ import { DelayCostInfo } from "@/components/features/delay-cost-info";
 import { StrategySummary } from "@/components/features/strategy-summary";
 import { WhatIfScenarios } from "@/components/features/what-if-scenarios";
 import { SortableStrategyTabs } from "@/components/features/sortable-strategy-tabs";
+import { LifeEventsEditor } from "@/components/features/life-events-editor";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export function Home() {
   const { t } = useTranslation();
-  const { strategies, removeStrategy, newBlankStrategy, reorderStrategies } =
-    useStrategyStore();
+  const {
+    strategies,
+    removeStrategy,
+    newBlankStrategy,
+    reorderStrategies,
+    updateStrategy,
+  } = useStrategyStore();
   const [activeStrategyId, setActiveStrategyId] = useState<string | undefined>(
     strategies.at(0)?.id
   );
@@ -38,6 +44,16 @@ export function Home() {
       newBlankStrategy();
     },
   });
+
+  const handleLifeEventsChange = useCallback(
+    (strategyId: string, events: LifeEvent[]) => {
+      const strategy = strategies.find((s) => s.id === strategyId);
+      if (strategy) {
+        updateStrategy({ ...strategy, lifeEvents: events });
+      }
+    },
+    [strategies, updateStrategy]
+  );
 
   return (
     <BaseLayout>
@@ -81,6 +97,12 @@ export function Home() {
                 {strategy.name}
               </h2>
               <StrategyForm defaultValues={strategy} formRef={formRef} />
+              <LifeEventsEditor
+                events={strategy.lifeEvents ?? []}
+                onChange={(events) => handleLifeEventsChange(strategy.id, events)}
+                currentAge={strategy.currentAge}
+                goalAge={strategy.goalAge}
+              />
               <StrategySummary strategy={strategy} />
               <WhatIfScenarios strategy={strategy} />
               <DelayCostInfo strategy={strategy} />

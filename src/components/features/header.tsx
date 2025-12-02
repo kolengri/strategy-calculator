@@ -17,7 +17,7 @@ export function Header() {
         </h1>
       </div>
       <div className="flex items-center gap-1.5">
-        <StrategyImportExport />
+        {/* <StrategyImportExport /> */}
         <CurrencySelector />
         <LanguageSelector />
       </div>

@@ -132,11 +132,19 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
           </div>
 
           {/* Second row: Ages + Goal (if goal-based) */}
-          <div className={`grid gap-3 ${isGoalBased ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-2 md:grid-cols-4'}`}>
+          <div
+            className={`grid gap-3 ${
+              isGoalBased
+                ? "grid-cols-2 md:grid-cols-4"
+                : "grid-cols-2 md:grid-cols-4"
+            }`}
+          >
             <form.AppField name="currentAge">
               {(field) => (
                 <field.NumberField
-                  label={t("components.features.strategy-form.fields.currentAge")}
+                  label={t(
+                    "components.features.strategy-form.fields.currentAge"
+                  )}
                   required
                   min={AGE_LIMITS.MIN}
                   max={AGE_LIMITS.MAX}
@@ -159,7 +167,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
             <form.AppField name="initialAmount">
               {(field) => (
                 <field.NumberField
-                  label={t("components.features.strategy-form.fields.initialAmount")}
+                  label={t(
+                    "components.features.strategy-form.fields.initialAmount"
+                  )}
                   required
                   min={0}
                   step={1000}
@@ -184,7 +194,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
               <form.AppField name="monthlyContribution">
                 {(field) => (
                   <field.NumberField
-                    label={t("components.features.strategy-form.fields.monthlyContribution")}
+                    label={t(
+                      "components.features.strategy-form.fields.monthlyContribution"
+                    )}
                     required
                     min={0}
                     step={100}
@@ -200,9 +212,13 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
             <form.AppField name="selectedFund">
               {(field) => (
                 <field.SelectField
-                  label={t("components.features.strategy-form.fields.selectedFund")}
+                  label={t(
+                    "components.features.strategy-form.fields.selectedFund"
+                  )}
                   options={FUNDS.map((fund) => ({
-                    label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(0)}%)`,
+                    label: `${fund.name} (${(fund.yearlyReturn * 100).toFixed(
+                      0
+                    )}%)`,
                     value: fund.id,
                   }))}
                   required
@@ -213,7 +229,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
             <form.AppField name="inflationRate">
               {(field) => (
                 <field.NumberField
-                  label={t("components.features.strategy-form.fields.inflationRate")}
+                  label={t(
+                    "components.features.strategy-form.fields.inflationRate"
+                  )}
                   required
                   min={0}
                   max={100}
@@ -238,7 +256,9 @@ export const StrategyForm = ({ defaultValues, formRef }: StrategyFormProps) => {
             {isGoalBased && (
               <div className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 flex flex-col justify-center">
                 <p className="text-xs text-muted-foreground">
-                  {t("components.features.strategy-form.goalBasedSummary.title")}
+                  {t(
+                    "components.features.strategy-form.goalBasedSummary.title"
+                  )}
                 </p>
                 <p className="text-lg font-semibold text-primary">
                   {hasGoalContribution
