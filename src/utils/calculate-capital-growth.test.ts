@@ -9,6 +9,7 @@ import {
   shouldStopCalculation,
   calculateProjectedCapital,
   estimateYearsToGoal,
+  calculateGoalBasedMonthlyContribution,
 } from "./calculate-capital-growth";
 import type { Strategy } from "@/stores/strategy";
 import { FUNDS } from "@/db/funds";
@@ -199,6 +200,36 @@ describe("calculateTargetAmount", () => {
 
     expect(yearsToGoal).toBeGreaterThan(0);
     expect(targetAmount).toBeGreaterThan(strategy.goal); // Adjusted for inflation
+  });
+});
+
+describe("calculateGoalBasedMonthlyContribution", () => {
+  test("should return positive contribution for valid inputs", () => {
+    const fund = FUNDS[0];
+    const contribution = calculateGoalBasedMonthlyContribution(
+      1000000,
+      100000,
+      30,
+      fund.yearlyReturn,
+      0.13,
+      3
+    );
+
+    expect(contribution).toBeGreaterThan(0);
+  });
+
+  test("should return 0 when goal already met", () => {
+    const fund = FUNDS[0];
+    const contribution = calculateGoalBasedMonthlyContribution(
+      100000,
+      1000000,
+      30,
+      fund.yearlyReturn,
+      0.13,
+      3
+    );
+
+    expect(contribution).toBe(0);
   });
 });
 
@@ -419,7 +450,7 @@ describe("calculateCapitalGrowth", () => {
       type: "goal-based",
       currentAge: 25,
       initialAmount: 100000,
-      monthlyContribution: 1000,
+      monthlyContribution: 0,
       selectedFund: FUNDS[0].id,
       inflationRate: 3,
       taxRate: 13,
@@ -427,11 +458,22 @@ describe("calculateCapitalGrowth", () => {
     };
 
     const result = calculateCapitalGrowth(strategy, 10);
+    const fund = FUNDS.find((f) => f.id === strategy.selectedFund)!;
+    const expectedContribution = calculateGoalBasedMonthlyContribution(
+      strategy.goal,
+      strategy.initialAmount,
+      strategy.currentAge,
+      fund.yearlyReturn,
+      strategy.taxRate / 100,
+      strategy.inflationRate
+    );
 
     expect(result.length).toBeGreaterThan(0);
     expect(result.length).toBeLessThanOrEqual(10);
     expect(result[0].capitalStart).toBe(100000);
-    expect(result[0].contributions).toBe(12000);
+    expect(result[0].contributions).toBe(
+      Math.round(expectedContribution * 12)
+    );
   });
 
   test("should stop at goal age for age-based strategy", () => {

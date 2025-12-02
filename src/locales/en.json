@@ -32,6 +32,11 @@
           "basic": "Basic Information",
           "financial": "Financial Details",
           "goal": "Goal Settings"
+        },
+        "goalBasedSummary": {
+          "title": "Required Monthly Contribution",
+          "description": "Calculated monthly amount needed to reach your goal with the selected fund and taxes.",
+          "placeholder": "Fill in goal, age, and financial fields to calculate"
         }
       },
       "capital-growth-table": {

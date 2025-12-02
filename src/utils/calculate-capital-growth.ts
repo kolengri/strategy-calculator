@@ -157,6 +157,25 @@ export function shouldStopCalculation(
   return false;
 }
 
+function getStrategyMonthlyContribution(
+  strategy: Strategy,
+  yearlyReturn: number,
+  taxRate: number
+): number {
+  if (strategy.type === "goal-based") {
+    return calculateGoalBasedMonthlyContribution(
+      strategy.goal,
+      strategy.initialAmount,
+      strategy.currentAge,
+      yearlyReturn,
+      taxRate,
+      strategy.inflationRate
+    );
+  }
+
+  return strategy.monthlyContribution;
+}
+
 export function calculateCapitalGrowth(
   strategy: Strategy,
   maxYears: number = 50
@@ -169,10 +188,19 @@ export function calculateCapitalGrowth(
   const yearlyReturn = fund.yearlyReturn;
   const monthlyReturn = calculateMonthlyReturn(yearlyReturn);
   const taxRate = strategy.taxRate / 100;
+  const monthlyContribution = getStrategyMonthlyContribution(
+    strategy,
+    yearlyReturn,
+    taxRate
+  );
+  const strategyWithMonthlyContribution =
+    strategy.type === "goal-based"
+      ? { ...strategy, monthlyContribution }
+      : strategy;
 
   // Calculate target amount and years to goal
   const { targetAmount, yearsToGoal } = calculateTargetAmount(
-    strategy,
+    strategyWithMonthlyContribution,
     yearlyReturn,
     taxRate
   );
@@ -190,7 +218,7 @@ export function calculateCapitalGrowth(
 
     const yearResult = calculateYearCapital(
       capitalStart,
-      strategy.monthlyContribution,
+      monthlyContribution,
       monthlyReturn,
       taxRate
     );
@@ -384,6 +412,87 @@ export function calculateRequiredMonthlyContribution(
 }
 
 /**
+ * Calculates required monthly contribution for goal-based strategy
+ * Calculates how much needs to be invested monthly to reach the goal
+ * Uses reasonable time frame (up to age 65 or 50 years maximum)
+ */
+export function calculateGoalBasedMonthlyContribution(
+  goal: number,
+  initialAmount: number,
+  currentAge: number,
+  yearlyReturn: number,
+  taxRate: number,
+  inflationRate: number
+): number {
+  // Validate inputs
+  if (goal <= 0 || currentAge <= 0 || currentAge >= 120) {
+    return 0;
+  }
+
+  // Use reasonable time frame: up to age 65 or 50 years, whichever is smaller
+  const maxAge = 65;
+  const maxYears = Math.min(maxAge - currentAge, 50);
+
+  if (maxYears <= 0) {
+    return 0;
+  }
+
+  // Adjust goal for inflation over the investment period
+  // We'll use an iterative approach to find the right contribution
+  let estimatedYears = maxYears;
+  let monthlyContribution = 0;
+  const maxIterations = 10;
+  let iterations = 0;
+
+  while (iterations < maxIterations) {
+    // Adjust goal for inflation over estimated years
+    const inflationMultiplier = Math.pow(
+      1 + inflationRate / 100,
+      estimatedYears
+    );
+    const adjustedGoal = goal * inflationMultiplier;
+
+    // If initial amount already exceeds adjusted goal, return 0
+    if (initialAmount >= adjustedGoal) {
+      return 0;
+    }
+
+    // Calculate required monthly contribution for adjusted goal
+    monthlyContribution = calculateRequiredMonthlyContribution(
+      adjustedGoal,
+      initialAmount,
+      yearlyReturn,
+      taxRate,
+      estimatedYears
+    );
+
+    // If contribution is 0 or negative, something went wrong
+    if (monthlyContribution <= 0) {
+      break;
+    }
+
+    // Estimate actual years needed with this contribution
+    const actualYears = estimateYearsToGoal(
+      initialAmount,
+      monthlyContribution,
+      yearlyReturn,
+      taxRate,
+      adjustedGoal
+    );
+
+    // If years are close enough, we're done
+    if (Math.abs(actualYears - estimatedYears) < 1 || actualYears >= maxYears) {
+      break;
+    }
+
+    estimatedYears = Math.min(actualYears, maxYears);
+    iterations++;
+  }
+
+  return Math.max(0, monthlyContribution);
+}
+
+/**
  * Calculates the cost of delay - how much it costs to start investing later
  * @param strategy - The current strategy
  * @param delayYears - Number of years to delay (default: 3)
@@ -426,6 +535,11 @@ export function calculateDelayCost(
 
   const yearlyReturn = fund.yearlyReturn;
   const taxRate = strategy.taxRate / 100;
+  const monthlyContribution = getStrategyMonthlyContribution(
+    strategy,
+    yearlyReturn,
+    taxRate
+  );
 
   // Calculate current strategy capital at goal
   let currentCapital: number;
@@ -441,7 +555,7 @@ export function calculateDelayCost(
     // Current strategy: start now
     currentCapital = calculateProjectedCapital(
       strategy.initialAmount,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       currentYearsToGoal
@@ -470,7 +584,7 @@ export function calculateDelayCost(
       // but only have remaining years to contribute
       delayedCapital = calculateProjectedCapital(
         delayedInitialAmount,
-        strategy.monthlyContribution,
+        monthlyContribution,
         yearlyReturn,
         taxRate,
         delayedYearsToGoal
@@ -483,7 +597,7 @@ export function calculateDelayCost(
     // Current strategy: calculate years to goal starting now
     currentYearsToGoal = estimateYearsToGoal(
       strategy.initialAmount,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       strategy.goal
@@ -491,7 +605,7 @@ export function calculateDelayCost(
 
     currentCapital = calculateProjectedCapital(
       strategy.initialAmount,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       currentYearsToGoal
@@ -511,7 +625,7 @@ export function calculateDelayCost(
 
     delayedYearsToGoal = estimateYearsToGoal(
       delayedInitialAmount,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       delayedGoal
@@ -519,7 +633,7 @@ export function calculateDelayCost(
 
     delayedCapital = calculateProjectedCapital(
       delayedInitialAmount,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       delayedYearsToGoal
@@ -546,7 +660,7 @@ export function calculateDelayCost(
     // Calculate required initial amount (keeping monthly contribution the same)
     requiredInitialAmount = calculateRequiredInitialAmount(
       currentCapital,
-      strategy.monthlyContribution,
+      monthlyContribution,
       yearlyReturn,
       taxRate,
       delayedYearsToGoal
