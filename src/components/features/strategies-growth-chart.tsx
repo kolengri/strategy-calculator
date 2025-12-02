@@ -9,22 +9,7 @@ import {
   prepareGrowthData,
   type PreparedChartDataPoint,
 } from "@/utils/prepare-growth-data";
-
-// Generate a unique color for each strategy based on its ID
-function getStrategyColor(strategyId: string, index: number): string {
-  // Use a hash function to generate a consistent color from the ID
-  let hash = 0;
-  for (let i = 0; i < strategyId.length; i++) {
-    hash = strategyId.charCodeAt(i) + ((hash << 5) - hash);
-  }
-
-  // Generate HSL color with good saturation and lightness
-  const hue = Math.abs(hash) % 360;
-  const saturation = 60 + (Math.abs(hash) % 20); // 60-80% saturation
-  const lightness = 45 + (Math.abs(hash) % 15); // 45-60% lightness
-
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-}
+import { getStrategyColor } from "@/utils/get-strategy-color";
 
 export const StrategiesGrowthChart = () => {
   const { t } = useTranslation();
@@ -92,8 +77,8 @@ export const StrategiesGrowthChart = () => {
     const ageRange = maxAge - minAge;
     const agePadding = Math.max(1, Math.floor(ageRange * 0.05)); // 5% padding or at least 1 year
 
-    const series = strategies.flatMap((strategy, index) => {
-      const color = getStrategyColor(strategy.id, index);
+    const series = strategies.flatMap((strategy) => {
+      const color = getStrategyColor(strategy.id);
 
       // Parse HSL color to get components for gradient
       const hslMatch = color.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
@@ -211,8 +196,7 @@ export const StrategiesGrowthChart = () => {
             if (capital !== undefined && !isNaN(capital)) {
               content += `<div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.1);">`;
               content += `<div style="font-weight: 600; color: ${getStrategyColor(
-                strategy.id,
-                strategies.indexOf(strategy)
+                strategy.id
               )}; margin-bottom: 4px;">${strategy.name}</div>`;
               content += `<div style="margin-left: 8px; font-size: 13px;">`;
               content += `<div>${t(

@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { XIcon, GripVertical } from "lucide-react";
 import type { Strategy } from "@/stores/strategy";
 import { isOnlyOneElement } from "@/utils/type-guards/is-only-one-element";
+import { getStrategyColor } from "@/utils/get-strategy-color";
 import { cn } from "@/lib/utils";
 
 type SortableTabProps = {
@@ -39,20 +40,28 @@ function SortableTab({ strategy, strategies, onRemove }: SortableTabProps) {
     isDragging,
   } = useSortable({ id: strategy.id });
 
+  const strategyColor = getStrategyColor(strategy.id);
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-  };
+    "--strategy-color": strategyColor,
+    borderLeftColor: strategyColor,
+    borderLeftWidth: "3px",
+  } as React.CSSProperties;
 
   return (
     <TabsTrigger
       ref={setNodeRef}
       style={style}
       value={strategy.id}
-      className={cn("group relative cursor-grab active:cursor-grabbing", {
-        "cursor-default": isOnlyOneElement(strategies),
-      })}
+      className={cn(
+        "group relative cursor-grab active:cursor-grabbing border-l-solid",
+        {
+          "cursor-default": isOnlyOneElement(strategies),
+        }
+      )}
     >
       {!isOnlyOneElement(strategies) && (
         <span
