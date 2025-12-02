@@ -33,7 +33,7 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
     [strategy]
   );
 
-  const scenarios = useMemo(
+  const { scenarios, baseFinalCapital } = useMemo(
     () => generateWhatIfScenarios(strategy, baseRows),
     [strategy, baseRows]
   );
@@ -41,8 +41,6 @@ export const WhatIfScenarios = ({ strategy }: WhatIfScenariosProps) => {
   if (baseRows.length === 0 || scenarios.length === 0) {
     return null;
   }
-
-  const baseFinalCapital = baseRows[baseRows.length - 1].capitalEnd;
 
   return (
     <Card className="border-blue-200 bg-blue-50/30">
